@@ -81,14 +81,18 @@ void MAGIXBSBingoApp::randomizeBoard() {
 				board[x].push_back("JOKER!");
 			}
 			else {
-				auto rng = std::default_random_engine{};
-				shuffle(begin(cloned), end(cloned), rng);
+				unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+				std::default_random_engine randomEveryTime(seed);
+
+				shuffle(begin(cloned), end(cloned), randomEveryTime);
 				board[x].push_back(cloned.at(0));
 
 				cloned.erase(cloned.begin());
 			}
 		}
 	}
+
+	cloned.clear();
 }
 
 cv::Mat MAGIXBSBingoApp::drawSquares(cv::Mat input) {
@@ -129,8 +133,8 @@ void MAGIXBSBingoApp::draw()
 		}
 		height += 160;
 	}
-
 }
+
 CINDER_APP(MAGIXBSBingoApp, RendererGl, [&](App::Settings *settings) {
 	settings->setResizable(false);
 })
