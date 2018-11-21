@@ -91,8 +91,6 @@ void MAGIXBSBingoApp::randomizeBoard() {
 }
 
 cv::Mat MAGIXBSBingoApp::drawSquares(cv::Mat input) {
-	cv::Rect white = cv::Rect(50, 50, 800, 800);
-	cv::rectangle(input, white, cv::Scalar(244, 244, 244), CV_FILLED, cv::LINE_8, 0);
 
 	tBoxes.clear();
 	tBoxes.reserve(25);
