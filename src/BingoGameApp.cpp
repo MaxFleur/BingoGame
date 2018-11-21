@@ -47,6 +47,7 @@ public:
 		"V",
 		"W",
 		"X",
+		"Y"
 	};
 	vector<vector<gl::TextureRef>> tBoxes;
 
@@ -69,7 +70,7 @@ void MAGIXBSBingoApp::randomizeBoard() {
 
 	board.clear();
 	vector<string> cloned;
-	cloned.resize(24);
+	cloned.resize(bsCases.size());
 
 	copy(begin(bsCases), end(bsCases), begin(cloned));
 
