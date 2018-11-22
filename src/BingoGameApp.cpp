@@ -13,7 +13,7 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-class MAGIXBSBingoApp : public App {
+class BingoGameApp : public App {
 public:
 
 	void setup() override;
@@ -22,6 +22,8 @@ public:
 	void randomizeBoard();
 	// Draw some square meshes and create textboxes für the bingo fields
 	cv::Mat drawSquares(cv::Mat input);
+
+	void mouseUp(MouseEvent event) override;
 
 	// 2D-Vector, represents the board
 	vector<vector<string>> board;
@@ -53,13 +55,15 @@ public:
 		"X",
 		"Y"
 	};
+
+	vector<vector<TextBox>> textBoxes; 
 	// 2D-Vector for the textBoxes used over the bingo board
-	vector<vector<gl::TextureRef>> tBoxes;
+	vector<vector<gl::TextureRef>> texturesFromTextBoxes;
 	// Texture for the ground and the square meshes
 	gl::TextureRef mTexture;
 };
 
-void MAGIXBSBingoApp::setup()
+void BingoGameApp::setup()
 {
 	// Load Board image and create a matrix
 	ci::Surface8u surface(loadImage(loadAsset("BoardGround.jpg")));
@@ -69,12 +73,12 @@ void MAGIXBSBingoApp::setup()
 	randomizeBoard();
 	cv::Mat output = drawSquares(input);
 
-	//  a texture from all stuff and set the windows to the actual board size
+	// Create a texture from all stuff and set the windows to the actual board size
 	mTexture = gl::Texture2d::create(fromOcv(input));
 	setWindowSize(surface.getWidth(), surface.getWidth());
 }
 
-void MAGIXBSBingoApp::randomizeBoard() {
+void BingoGameApp::randomizeBoard() {
 
 	// Clear board in case of another started game
 	board.clear();
@@ -86,7 +90,7 @@ void MAGIXBSBingoApp::randomizeBoard() {
 
 	// Iterate over all fields and give a string to every field
 	for (int x = 0; x <= 4; x++) {
-		board.push_back(std::vector<string>());
+		board.push_back(vector<string>());
 		for (int y = 0; y <= 4; y++) {
 			// Joker in the middle of the field
 			if (x == 2 && y == 2) {
@@ -109,17 +113,22 @@ void MAGIXBSBingoApp::randomizeBoard() {
 	cloned.clear();
 }
 
-cv::Mat MAGIXBSBingoApp::drawSquares(cv::Mat input) {
+cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 
 	// Clear size of textboxes and reserve them 25 fields
-	tBoxes.clear();
-	tBoxes.reserve(25);
+	texturesFromTextBoxes.clear();
+	texturesFromTextBoxes.reserve(25);
+
+	textBoxes.clear();
+	textBoxes.reserve(25);
 
 	// Iterates over the board, creating textboxes and square meshes.
 	int height = 50;
 	for (int x = 0; x <= 4; x++) {
 		int width = 50;
-		tBoxes.push_back(std::vector<gl::TextureRef>());
+		texturesFromTextBoxes.push_back(vector<gl::TextureRef>());
+		textBoxes.push_back(vector<TextBox>());
+
 		for (int y = 0; y <= 4; y++) {
 			// Creates a Textbox, setting color of the text and the background. 
 			// Uses the strings from the bsCases-Vector.
@@ -130,9 +139,10 @@ cv::Mat MAGIXBSBingoApp::drawSquares(cv::Mat input) {
 				.text(board[x][y]);
 			tbox.setColor(Color(0.0f, 0.0f, 0.0f));
 			tbox.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
+			textBoxes[x].push_back(tbox);
 			// Create a texture for every testbox and store it for later drawing
 			gl::TextureRef Texture = gl::Texture2d::create(tbox.render());
-			tBoxes[x].push_back(Texture);
+			texturesFromTextBoxes[x].push_back(Texture);
 
 			// Draws the square meshes over the field
 			cv::Rect r = cv::Rect(width, height, 160, 160);
@@ -144,7 +154,7 @@ cv::Mat MAGIXBSBingoApp::drawSquares(cv::Mat input) {
 	return input;
 }
 
-void MAGIXBSBingoApp::draw()
+void BingoGameApp::draw()
 {
 	// Draw texture of the board and the square meshes
 	gl::clear();
@@ -154,14 +164,33 @@ void MAGIXBSBingoApp::draw()
 	for (int x = 0; x <= 4; x++) {
 		int width = 51;
 		for (int y = 0; y <= 4; y++) {
-			gl::draw(tBoxes[x][y], vec2(width, height));
+			gl::draw(texturesFromTextBoxes[x][y], vec2(width, height));
 			width += 160;
 		}
 		height += 160;
 	}
 }
 
+
+void BingoGameApp::mouseUp(MouseEvent event) {
+	if (event.isLeft()) {
+		int x = event.getX(); 
+		int y = event.getY();
+
+		int boxRow = (y - 51) / 158;
+		int boxCol = (x - 51) / 158;
+
+		textBoxes[boxRow][boxCol].setColor(Color(0.96f, 0.96f, 0.96f));
+		textBoxes[boxRow][boxCol].setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
+
+		gl::TextureRef Texture = gl::Texture2d::create(textBoxes[boxRow][boxCol].render());
+		texturesFromTextBoxes.at(boxRow).at(boxCol) = Texture;
+		gl::draw(texturesFromTextBoxes[boxRow][boxCol]);
+	}
+}
+
+
 // Set the window so it is not resizable
-CINDER_APP(MAGIXBSBingoApp, RendererGl, [&](App::Settings *settings) {
+CINDER_APP(BingoGameApp, RendererGl, [&](App::Settings *settings) {
 	settings->setResizable(false);
 })
