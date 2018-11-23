@@ -215,21 +215,25 @@ void BingoGameApp::draw()
 
 
 void BingoGameApp::mouseUp(MouseEvent event) {
+
 	if (event.isLeft()) {
 		int x = event.getX(); 
 		int y = event.getY();
 
-		int boxRow = (y - 51) / 158;
-		int boxCol = (x - 51) / 158;
+		if (x < 849 && x > 50 && y < 850 && y > 50) {
 
-		isBlack.at(boxRow).at(boxCol) = true;
+			int boxRow = (y - 51) / 160;
+			int boxCol = (x - 51) / 160;
 
-		textBoxes[boxRow][boxCol].setColor(Color(0.96f, 0.96f, 0.96f));
-		textBoxes[boxRow][boxCol].setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
+			isBlack.at(boxRow).at(boxCol) = true;
 
-		gl::TextureRef Texture = gl::Texture2d::create(textBoxes[boxRow][boxCol].render());
-		texturesFromTextBoxes.at(boxRow).at(boxCol) = Texture;
-		gl::draw(texturesFromTextBoxes[boxRow][boxCol]);
+			textBoxes[boxRow][boxCol].setColor(Color(0.96f, 0.96f, 0.96f));
+			textBoxes[boxRow][boxCol].setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
+
+			gl::TextureRef Texture = gl::Texture2d::create(textBoxes[boxRow][boxCol].render());
+			texturesFromTextBoxes.at(boxRow).at(boxCol) = Texture;
+			gl::draw(texturesFromTextBoxes[boxRow][boxCol]);
+		}
 	}
 }
 
