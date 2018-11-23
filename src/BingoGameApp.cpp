@@ -4,6 +4,7 @@
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 #include "cinder/ImageIo.h"
+#include "cinder/audio/audio.h"
 #include <algorithm>
 #include <random> 
 
@@ -65,19 +66,21 @@ public:
 	// Texture for the ground and the square meshes
 	gl::TextureRef mTexture;
 	gl::TextureRef winningTexture;
+
+	audio::VoiceRef mVoice;
 };
 
 void BingoGameApp::setup()
 {
 	string won = "YEAH, DU HAST GEWONNEN! ABER LEIDER GIBTS KEINEN PREIS. SPIEL DOCH EINFACH NOCHMAL!";
-	TextBox tboxWon = TextBox()
-		.alignment(TextBox::CENTER)
-		.font(Font("Times New Roman", 32))
-		.size(ivec2(360, 120))
-		.text(won);
+	TextBox tboxWon = TextBox().alignment(TextBox::CENTER).font(Font("Times New Roman", 32)).size(ivec2(360, 120)).text(won);
 	tboxWon.setColor(Color(1.0f, 0.839f, 0.0f));
 	tboxWon.setBackgroundColor(Color(0.289f, 0.125f, 0.23f));
 	winningTexture = gl::Texture2d::create(tboxWon.render());
+
+	audio::SourceFileRef sourceFile = audio::load(app::loadAsset("win.mp3"));
+	mVoice = audio::Voice::create(sourceFile);
+	mVoice->setVolume(15);
 
 	// Load Board image and create a matrix
 	ci::Surface8u surface(loadImage(loadAsset("BoardGround.jpg")));
@@ -149,11 +152,7 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 
 			// Creates a Textbox, setting color of the text and the background. 
 			// Uses the strings from the bsCases-Vector.
-			TextBox tbox = TextBox()
-				.alignment(TextBox::CENTER)
-				.font(Font("Times New Roman", 32))
-				.size(ivec2(158, 158))
-				.text(board[x][y]);
+			TextBox tbox = TextBox().alignment(TextBox::CENTER).font(Font("Times New Roman", 32)).size(ivec2(158, 158)).text(board[x][y]);
 			if(x == 2 && y == 2) {
 				isBlack[x].push_back(true);
 				tbox.setColor(Color(0.96f, 0.96f, 0.96f));
@@ -217,7 +216,7 @@ void BingoGameApp::draw()
 void BingoGameApp::mouseUp(MouseEvent event) {
 
 	if (event.isLeft()) {
-		int x = event.getX(); 
+		int x = event.getX();
 		int y = event.getY();
 
 		if (x < 849 && x > 50 && y < 850 && y > 50) {
@@ -233,6 +232,22 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 			gl::TextureRef Texture = gl::Texture2d::create(textBoxes[boxRow][boxCol].render());
 			texturesFromTextBoxes.at(boxRow).at(boxCol) = Texture;
 			gl::draw(texturesFromTextBoxes[boxRow][boxCol]);
+		}
+		if (isBlack.at(0).at(0) == true && isBlack.at(0).at(1) == true && isBlack.at(0).at(2) == true && isBlack.at(0).at(3) == true && isBlack.at(0).at(4) == true
+			|| isBlack.at(1).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(1).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(1).at(4) == true
+			|| isBlack.at(2).at(0) == true && isBlack.at(2).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(2).at(3) == true && isBlack.at(2).at(4) == true
+			|| isBlack.at(3).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(3).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(3).at(4) == true
+			|| isBlack.at(4).at(0) == true && isBlack.at(4).at(1) == true && isBlack.at(4).at(2) == true && isBlack.at(4).at(3) == true && isBlack.at(4).at(4) == true
+
+			|| isBlack.at(0).at(0) == true && isBlack.at(1).at(0) == true && isBlack.at(2).at(0) == true && isBlack.at(3).at(0) == true && isBlack.at(4).at(0) == true
+			|| isBlack.at(0).at(1) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(1) == true && isBlack.at(3).at(1) == true && isBlack.at(4).at(1) == true
+			|| isBlack.at(0).at(2) == true && isBlack.at(1).at(2) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(2) == true && isBlack.at(4).at(2) == true
+			|| isBlack.at(0).at(3) == true && isBlack.at(1).at(3) == true && isBlack.at(2).at(3) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(3) == true
+
+			|| isBlack.at(0).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(4) == true
+			|| isBlack.at(4).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(0).at(4) == true) {
+
+			mVoice->start();
 		}
 	}
 }
