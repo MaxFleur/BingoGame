@@ -57,14 +57,28 @@ public:
 	};
 
 	vector<vector<TextBox>> textBoxes; 
+
+	vector<vector<bool>> isBlack;
+
 	// 2D-Vector for the textBoxes used over the bingo board
 	vector<vector<gl::TextureRef>> texturesFromTextBoxes;
 	// Texture for the ground and the square meshes
 	gl::TextureRef mTexture;
+	gl::TextureRef winningTexture;
 };
 
 void BingoGameApp::setup()
 {
+	string won = "YEAH, DU HAST GEWONNEN! ABER LEIDER GIBTS KEINEN PREIS. SPIEL DOCH EINFACH NOCHMAL!";
+	TextBox tboxWon = TextBox()
+		.alignment(TextBox::CENTER)
+		.font(Font("Times New Roman", 32))
+		.size(ivec2(360, 120))
+		.text(won);
+	tboxWon.setColor(Color(1.0f, 0.839f, 0.0f));
+	tboxWon.setBackgroundColor(Color(0.289f, 0.125f, 0.23f));
+	winningTexture = gl::Texture2d::create(tboxWon.render());
+
 	// Load Board image and create a matrix
 	ci::Surface8u surface(loadImage(loadAsset("BoardGround.jpg")));
 	cv::Mat input(toOcv(surface));
@@ -76,6 +90,7 @@ void BingoGameApp::setup()
 	// Create a texture from all stuff and set the windows to the actual board size
 	mTexture = gl::Texture2d::create(fromOcv(input));
 	setWindowSize(surface.getWidth(), surface.getWidth());
+
 }
 
 void BingoGameApp::randomizeBoard() {
@@ -128,8 +143,10 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 		int width = 50;
 		texturesFromTextBoxes.push_back(vector<gl::TextureRef>());
 		textBoxes.push_back(vector<TextBox>());
+		isBlack.push_back(vector<bool>());
 
 		for (int y = 0; y <= 4; y++) {
+
 			// Creates a Textbox, setting color of the text and the background. 
 			// Uses the strings from the bsCases-Vector.
 			TextBox tbox = TextBox()
@@ -137,8 +154,16 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 				.font(Font("Times New Roman", 32))
 				.size(ivec2(158, 158))
 				.text(board[x][y]);
-			tbox.setColor(Color(0.0f, 0.0f, 0.0f));
-			tbox.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
+			if(x == 2 && y == 2) {
+				isBlack[x].push_back(true);
+				tbox.setColor(Color(0.96f, 0.96f, 0.96f));
+				tbox.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
+			}
+			else {
+				isBlack[x].push_back(false);
+				tbox.setColor(Color(0.0f, 0.0f, 0.0f));
+				tbox.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
+			}
 			textBoxes[x].push_back(tbox);
 			// Create a texture for every testbox and store it for later drawing
 			gl::TextureRef Texture = gl::Texture2d::create(tbox.render());
@@ -169,6 +194,23 @@ void BingoGameApp::draw()
 		}
 		height += 160;
 	}
+
+	if (isBlack.at(0).at(0) == true && isBlack.at(0).at(1) == true && isBlack.at(0).at(2) == true && isBlack.at(0).at(3) == true && isBlack.at(0).at(4) == true
+		|| isBlack.at(1).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(1).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(1).at(4) == true
+		|| isBlack.at(2).at(0) == true && isBlack.at(2).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(2).at(3) == true && isBlack.at(2).at(4) == true
+		|| isBlack.at(3).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(3).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(3).at(4) == true
+		|| isBlack.at(4).at(0) == true && isBlack.at(4).at(1) == true && isBlack.at(4).at(2) == true && isBlack.at(4).at(3) == true && isBlack.at(4).at(4) == true
+
+		|| isBlack.at(0).at(0) == true && isBlack.at(1).at(0) == true && isBlack.at(2).at(0) == true && isBlack.at(3).at(0) == true && isBlack.at(4).at(0) == true
+		|| isBlack.at(0).at(1) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(1) == true && isBlack.at(3).at(1) == true && isBlack.at(4).at(1) == true
+		|| isBlack.at(0).at(2) == true && isBlack.at(1).at(2) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(2) == true && isBlack.at(4).at(2) == true
+		|| isBlack.at(0).at(3) == true && isBlack.at(1).at(3) == true && isBlack.at(2).at(3) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(3) == true
+
+		|| isBlack.at(0).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(4) == true
+		|| isBlack.at(4).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(0).at(4) == true) {
+
+		gl::draw(winningTexture, ivec2(270, 80));
+	}
 }
 
 
@@ -180,6 +222,8 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 		int boxRow = (y - 51) / 158;
 		int boxCol = (x - 51) / 158;
 
+		isBlack.at(boxRow).at(boxCol) = true;
+
 		textBoxes[boxRow][boxCol].setColor(Color(0.96f, 0.96f, 0.96f));
 		textBoxes[boxRow][boxCol].setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
 
@@ -188,7 +232,6 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 		gl::draw(texturesFromTextBoxes[boxRow][boxCol]);
 	}
 }
-
 
 // Set the window so it is not resizable
 CINDER_APP(BingoGameApp, RendererGl, [&](App::Settings *settings) {
