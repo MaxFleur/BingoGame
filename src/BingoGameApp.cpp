@@ -66,6 +66,7 @@ public:
 	// Texture for the ground and the square meshes
 	gl::TextureRef mTexture;
 	gl::TextureRef winningTexture;
+	gl::TextureRef restartTexture;
 
 	audio::VoiceRef mVoice;
 };
@@ -77,6 +78,12 @@ void BingoGameApp::setup()
 	tboxWon.setColor(Color(1.0f, 0.839f, 0.0f));
 	tboxWon.setBackgroundColor(Color(0.289f, 0.125f, 0.23f));
 	winningTexture = gl::Texture2d::create(tboxWon.render());
+
+	string restart = "NEUSTARTEN";
+	TextBox tboxRestart = TextBox().alignment(TextBox::CENTER).font(Font("Times New Roman", 32)).size(ivec2(200, 60)).text(restart);
+	tboxRestart.setColor(Color(0.03f, 0.03f, 0.03f));
+	tboxRestart.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
+	restartTexture = gl::Texture2d::create(tboxRestart.render());
 
 	audio::SourceFileRef sourceFile = audio::load(app::loadAsset("win.mp3"));
 	mVoice = audio::Voice::create(sourceFile);
@@ -92,7 +99,7 @@ void BingoGameApp::setup()
 
 	// Create a texture from all stuff and set the windows to the actual board size
 	mTexture = gl::Texture2d::create(fromOcv(input));
-	setWindowSize(surface.getWidth(), surface.getWidth());
+	setWindowSize(surface.getWidth(), surface.getHeight());
 
 }
 
@@ -139,6 +146,8 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 
 	textBoxes.clear();
 	textBoxes.reserve(25);
+
+	isBlack.clear();
 
 	// Iterates over the board, creating textboxes and square meshes.
 	int height = 50;
@@ -193,6 +202,7 @@ void BingoGameApp::draw()
 		}
 		height += 160;
 	}
+	gl::draw(restartTexture, vec2(350, 880));
 
 	if (isBlack.at(0).at(0) == true && isBlack.at(0).at(1) == true && isBlack.at(0).at(2) == true && isBlack.at(0).at(3) == true && isBlack.at(0).at(4) == true
 		|| isBlack.at(1).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(1).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(1).at(4) == true
@@ -208,7 +218,7 @@ void BingoGameApp::draw()
 		|| isBlack.at(0).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(4) == true
 		|| isBlack.at(4).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(0).at(4) == true) {
 
-		gl::draw(winningTexture, ivec2(270, 80));
+		gl::draw(winningTexture, vec2(270, 80));
 	}
 }
 
@@ -232,22 +242,26 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 			gl::TextureRef Texture = gl::Texture2d::create(textBoxes[boxRow][boxCol].render());
 			texturesFromTextBoxes.at(boxRow).at(boxCol) = Texture;
 			gl::draw(texturesFromTextBoxes[boxRow][boxCol]);
+
+			if (isBlack.at(0).at(0) == true && isBlack.at(0).at(1) == true && isBlack.at(0).at(2) == true && isBlack.at(0).at(3) == true && isBlack.at(0).at(4) == true
+				|| isBlack.at(1).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(1).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(1).at(4) == true
+				|| isBlack.at(2).at(0) == true && isBlack.at(2).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(2).at(3) == true && isBlack.at(2).at(4) == true
+				|| isBlack.at(3).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(3).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(3).at(4) == true
+				|| isBlack.at(4).at(0) == true && isBlack.at(4).at(1) == true && isBlack.at(4).at(2) == true && isBlack.at(4).at(3) == true && isBlack.at(4).at(4) == true
+
+				|| isBlack.at(0).at(0) == true && isBlack.at(1).at(0) == true && isBlack.at(2).at(0) == true && isBlack.at(3).at(0) == true && isBlack.at(4).at(0) == true
+				|| isBlack.at(0).at(1) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(1) == true && isBlack.at(3).at(1) == true && isBlack.at(4).at(1) == true
+				|| isBlack.at(0).at(2) == true && isBlack.at(1).at(2) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(2) == true && isBlack.at(4).at(2) == true
+				|| isBlack.at(0).at(3) == true && isBlack.at(1).at(3) == true && isBlack.at(2).at(3) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(3) == true
+
+				|| isBlack.at(0).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(4) == true
+				|| isBlack.at(4).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(0).at(4) == true) {
+
+				mVoice->start();
+			}
 		}
-		if (isBlack.at(0).at(0) == true && isBlack.at(0).at(1) == true && isBlack.at(0).at(2) == true && isBlack.at(0).at(3) == true && isBlack.at(0).at(4) == true
-			|| isBlack.at(1).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(1).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(1).at(4) == true
-			|| isBlack.at(2).at(0) == true && isBlack.at(2).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(2).at(3) == true && isBlack.at(2).at(4) == true
-			|| isBlack.at(3).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(3).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(3).at(4) == true
-			|| isBlack.at(4).at(0) == true && isBlack.at(4).at(1) == true && isBlack.at(4).at(2) == true && isBlack.at(4).at(3) == true && isBlack.at(4).at(4) == true
-
-			|| isBlack.at(0).at(0) == true && isBlack.at(1).at(0) == true && isBlack.at(2).at(0) == true && isBlack.at(3).at(0) == true && isBlack.at(4).at(0) == true
-			|| isBlack.at(0).at(1) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(1) == true && isBlack.at(3).at(1) == true && isBlack.at(4).at(1) == true
-			|| isBlack.at(0).at(2) == true && isBlack.at(1).at(2) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(2) == true && isBlack.at(4).at(2) == true
-			|| isBlack.at(0).at(3) == true && isBlack.at(1).at(3) == true && isBlack.at(2).at(3) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(3) == true
-
-			|| isBlack.at(0).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(4) == true
-			|| isBlack.at(4).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(0).at(4) == true) {
-
-			mVoice->start();
+		if (x > 350 && x < 550 && y > 880 && y < 940) {
+			setup();
 		}
 	}
 }
