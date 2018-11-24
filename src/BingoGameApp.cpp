@@ -67,20 +67,27 @@ public:
 	gl::TextureRef mTexture;
 	gl::TextureRef winningTexture;
 	gl::TextureRef restartTexture;
+	gl::TextureRef headerTexture;
 
 	audio::VoiceRef mVoice;
 };
 
 void BingoGameApp::setup()
 {
+	string header = "DAS EPISCHSTE BINGO-SPIEL ALLER ZEITEN!";
+	TextBox tboxHeader = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 40)).size(ivec2(700, 40)).text(header);
+	tboxHeader.setColor(Color(0.03f, 0.03f, 0.03f));
+	tboxHeader.setBackgroundColor(Color(0.85f, 0.55f, 0.32f));
+	headerTexture = gl::Texture2d::create(tboxHeader.render());
+
 	string won = "YEAH, DU HAST GEWONNEN! ABER LEIDER GIBTS KEINEN PREIS. SPIEL DOCH EINFACH NOCHMAL!";
-	TextBox tboxWon = TextBox().alignment(TextBox::CENTER).font(Font("Times New Roman", 32)).size(ivec2(360, 120)).text(won);
+	TextBox tboxWon = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 32)).size(ivec2(360, 120)).text(won);
 	tboxWon.setColor(Color(1.0f, 0.839f, 0.0f));
 	tboxWon.setBackgroundColor(Color(0.289f, 0.125f, 0.23f));
 	winningTexture = gl::Texture2d::create(tboxWon.render());
 
-	string restart = "NEUSTARTEN";
-	TextBox tboxRestart = TextBox().alignment(TextBox::CENTER).font(Font("Times New Roman", 32)).size(ivec2(200, 60)).text(restart);
+	string restart = "Neustarten";
+	TextBox tboxRestart = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 32)).size(ivec2(150, 40)).text(restart);
 	tboxRestart.setColor(Color(0.03f, 0.03f, 0.03f));
 	tboxRestart.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
 	restartTexture = gl::Texture2d::create(tboxRestart.render());
@@ -150,7 +157,7 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 	isBlack.clear();
 
 	// Iterates over the board, creating textboxes and square meshes.
-	int height = 50;
+	int height = 100;
 	for (int x = 0; x <= 4; x++) {
 		int width = 50;
 		texturesFromTextBoxes.push_back(vector<gl::TextureRef>());
@@ -161,7 +168,7 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 
 			// Creates a Textbox, setting color of the text and the background. 
 			// Uses the strings from the bsCases-Vector.
-			TextBox tbox = TextBox().alignment(TextBox::CENTER).font(Font("Times New Roman", 32)).size(ivec2(158, 158)).text(board[x][y]);
+			TextBox tbox = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 32)).size(ivec2(158, 158)).text(board[x][y]);
 			if(x == 2 && y == 2) {
 				isBlack[x].push_back(true);
 				tbox.setColor(Color(0.96f, 0.96f, 0.96f));
@@ -184,6 +191,10 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 		}
 		height += 160;
 	}
+	cv::Rect r = cv::Rect(375, 925, 150, 40);
+	cv::rectangle(input, r, cv::Scalar(80, 80, 80), 3, cv::LINE_8, 0);
+	cv::Rect h = cv::Rect(100, 20, 700, 40);
+	cv::rectangle(input, h, cv::Scalar(80, 80, 80), 3, cv::LINE_8, 0);
 	return input;
 }
 
@@ -193,7 +204,7 @@ void BingoGameApp::draw()
 	gl::clear();
 	gl::draw(mTexture);
 	// Draw textBoxes, iterating over the board. Height and width are set to 51 to create a more stylish look
-	int height = 51;
+	int height = 101;
 	for (int x = 0; x <= 4; x++) {
 		int width = 51;
 		for (int y = 0; y <= 4; y++) {
@@ -202,7 +213,9 @@ void BingoGameApp::draw()
 		}
 		height += 160;
 	}
-	gl::draw(restartTexture, vec2(350, 880));
+
+	gl::draw(restartTexture, vec2(375, 925));
+	gl::draw(headerTexture, vec2(100, 20));
 
 	if (isBlack.at(0).at(0) == true && isBlack.at(0).at(1) == true && isBlack.at(0).at(2) == true && isBlack.at(0).at(3) == true && isBlack.at(0).at(4) == true
 		|| isBlack.at(1).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(1).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(1).at(4) == true
@@ -218,8 +231,9 @@ void BingoGameApp::draw()
 		|| isBlack.at(0).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(4) == true
 		|| isBlack.at(4).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(0).at(4) == true) {
 
-		gl::draw(winningTexture, vec2(270, 80));
+		gl::draw(winningTexture, vec2(270, 130));
 	}
+
 }
 
 
@@ -229,9 +243,9 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 		int x = event.getX();
 		int y = event.getY();
 
-		if (x < 849 && x > 50 && y < 850 && y > 50) {
+		if (x < 849 && x > 50 && y < 900 && y > 100) {
 
-			int boxRow = (y - 51) / 160;
+			int boxRow = (y - 101) / 160;
 			int boxCol = (x - 51) / 160;
 
 			isBlack.at(boxRow).at(boxCol) = true;
@@ -260,7 +274,7 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 				mVoice->start();
 			}
 		}
-		if (x > 350 && x < 550 && y > 880 && y < 940) {
+		if (x > 375 && x < 525 && y > 925 && y < 965) {
 			setup();
 		}
 	}
