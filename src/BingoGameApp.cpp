@@ -75,22 +75,24 @@ public:
 void BingoGameApp::setup()
 {
 	string header = "DAS EPISCHSTE BINGO-SPIEL ALLER ZEITEN!";
-	TextBox tboxHeader = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 40)).size(ivec2(700, 40)).text(header);
-	tboxHeader.setColor(Color(0.03f, 0.03f, 0.03f));
-	tboxHeader.setBackgroundColor(Color(0.85f, 0.55f, 0.32f));
-	headerTexture = gl::Texture2d::create(tboxHeader.render());
+	TextBox tBoxSetup = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 40)).size(ivec2(700, 40)).text(header);
+	tBoxSetup.setColor(Color(0.03f, 0.03f, 0.03f));
+	tBoxSetup.setBackgroundColor(Color(0.85f, 0.55f, 0.32f));
+	headerTexture = gl::Texture2d::create(tBoxSetup.render());
 
-	string won = "YEAH, DU HAST GEWONNEN! ABER LEIDER GIBTS KEINEN PREIS. SPIEL DOCH EINFACH NOCHMAL!";
-	TextBox tboxWon = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 32)).size(ivec2(360, 120)).text(won);
-	tboxWon.setColor(Color(1.0f, 0.839f, 0.0f));
-	tboxWon.setBackgroundColor(Color(0.289f, 0.125f, 0.23f));
-	winningTexture = gl::Texture2d::create(tboxWon.render());
+	tBoxSetup.setText("YEAH, DU HAST GEWONNEN!ABER LEIDER GIBTS KEINEN PREIS.SPIEL DOCH EINFACH NOCHMAL!");
+	tBoxSetup.setFont(Font("Helvetica", 32));
+	tBoxSetup.setSize(vec2(360, 120));
+	tBoxSetup.setColor(Color(1.0f, 0.839f, 0.0f));
+	tBoxSetup.setBackgroundColor(Color(0.289f, 0.125f, 0.23f));
+	winningTexture = gl::Texture2d::create(tBoxSetup.render());
 
-	string restart = "Neustarten";
-	TextBox tboxRestart = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 32)).size(ivec2(150, 40)).text(restart);
-	tboxRestart.setColor(Color(0.03f, 0.03f, 0.03f));
-	tboxRestart.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
-	restartTexture = gl::Texture2d::create(tboxRestart.render());
+	tBoxSetup.setText("Neustarten");
+	tBoxSetup.setFont(Font("Helvetica", 32));
+	tBoxSetup.setSize(vec2(150, 40));
+	tBoxSetup.setColor(Color(0.03f, 0.03f, 0.03f));
+	tBoxSetup.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
+	restartTexture = gl::Texture2d::create(tBoxSetup.render());
 
 	audio::SourceFileRef sourceFile = audio::load(app::loadAsset("win.mp3"));
 	mVoice = audio::Voice::create(sourceFile);
