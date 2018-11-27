@@ -59,6 +59,7 @@ public:
 	vector<vector<TextBox>> textBoxes; 
 
 	vector<vector<bool>> isBlack;
+	bool restart;
 
 	// 2D-Vector for the textBoxes used over the bingo board
 	vector<vector<gl::TextureRef>> texturesFromTextBoxes;
@@ -73,15 +74,15 @@ public:
 
 void BingoGameApp::setup()
 {
-	string header = "DAS EPISCHE MAGIX-BULLSHIT-BINGO!";
+	string header = "DAS EPISCHSTE BULLSHIT-BINGO DER WELT!";
 	TextBox tBoxSetup = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 40)).size(ivec2(700, 40)).text(header);
 	tBoxSetup.setColor(Color(0.03f, 0.03f, 0.03f));
 	tBoxSetup.setBackgroundColor(Color(0.85f, 0.55f, 0.32f));
 	headerTexture = gl::Texture2d::create(tBoxSetup.render());
 
-	tBoxSetup.setText("YEAH, DU HAST GEWONNEN!ABER LEIDER GIBTS KEINEN PREIS. SPIEL DOCH EINFACH NOCHMAL!");
+	tBoxSetup.setText("YEAH, DU HAST GEWONNEN! \nABER LEIDER GIBTS KEINEN PREIS. \nSPIEL DOCH EINFACH NOCHMAL! \nKLICKE, UM DAS SPIEL NEUZUSTARTEN.");
 	tBoxSetup.setFont(Font("Helvetica", 32));
-	tBoxSetup.setSize(vec2(360, 120));
+	tBoxSetup.setSize(vec2(500, 120));
 	tBoxSetup.setColor(Color(1.0f, 0.839f, 0.0f));
 	tBoxSetup.setBackgroundColor(Color(0.289f, 0.125f, 0.23f));
 	winningTexture = gl::Texture2d::create(tBoxSetup.render());
@@ -187,6 +188,56 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 	return input;
 }
 
+void BingoGameApp::mouseUp(MouseEvent event) {
+
+	if (event.isLeft()) {
+		if (restart == true) {
+			setup();
+			restart = false;
+		}
+		else {
+			int x = event.getX();
+			int y = event.getY();
+
+			if (x < 849 && x > 50 && y < 900 && y > 100) {
+
+				int boxRow = (y - 101) / 160;
+				int boxCol = (x - 51) / 160;
+
+				isBlack.at(boxRow).at(boxCol) = true;
+
+				textBoxes[boxRow][boxCol].setColor(Color(0.96f, 0.96f, 0.96f));
+				textBoxes[boxRow][boxCol].setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
+
+				gl::TextureRef Texture = gl::Texture2d::create(textBoxes[boxRow][boxCol].render());
+				texturesFromTextBoxes.at(boxRow).at(boxCol) = Texture;
+				gl::draw(texturesFromTextBoxes[boxRow][boxCol]);
+
+				if (isBlack.at(0).at(0) == true && isBlack.at(0).at(1) == true && isBlack.at(0).at(2) == true && isBlack.at(0).at(3) == true && isBlack.at(0).at(4) == true
+					|| isBlack.at(1).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(1).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(1).at(4) == true
+					|| isBlack.at(2).at(0) == true && isBlack.at(2).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(2).at(3) == true && isBlack.at(2).at(4) == true
+					|| isBlack.at(3).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(3).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(3).at(4) == true
+					|| isBlack.at(4).at(0) == true && isBlack.at(4).at(1) == true && isBlack.at(4).at(2) == true && isBlack.at(4).at(3) == true && isBlack.at(4).at(4) == true
+
+					|| isBlack.at(0).at(0) == true && isBlack.at(1).at(0) == true && isBlack.at(2).at(0) == true && isBlack.at(3).at(0) == true && isBlack.at(4).at(0) == true
+					|| isBlack.at(0).at(1) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(1) == true && isBlack.at(3).at(1) == true && isBlack.at(4).at(1) == true
+					|| isBlack.at(0).at(2) == true && isBlack.at(1).at(2) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(2) == true && isBlack.at(4).at(2) == true
+					|| isBlack.at(0).at(3) == true && isBlack.at(1).at(3) == true && isBlack.at(2).at(3) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(3) == true
+
+					|| isBlack.at(0).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(4) == true
+					|| isBlack.at(4).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(0).at(4) == true) {
+
+					mVoice->start();
+					restart = true;
+				}
+			}
+			if (x > 375 && x < 525 && y > 925 && y < 965) {
+				setup();
+			}
+		}
+	}
+}
+
 void BingoGameApp::draw()
 {
 	// Draw texture of the board and the square meshes
@@ -220,52 +271,7 @@ void BingoGameApp::draw()
 		|| isBlack.at(0).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(4) == true
 		|| isBlack.at(4).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(0).at(4) == true) {
 
-		gl::draw(winningTexture, vec2(270, 130));
-	}
-
-}
-
-
-void BingoGameApp::mouseUp(MouseEvent event) {
-
-	if (event.isLeft()) {
-		int x = event.getX();
-		int y = event.getY();
-
-		if (x < 849 && x > 50 && y < 900 && y > 100) {
-
-			int boxRow = (y - 101) / 160;
-			int boxCol = (x - 51) / 160;
-
-			isBlack.at(boxRow).at(boxCol) = true;
-
-			textBoxes[boxRow][boxCol].setColor(Color(0.96f, 0.96f, 0.96f));
-			textBoxes[boxRow][boxCol].setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
-
-			gl::TextureRef Texture = gl::Texture2d::create(textBoxes[boxRow][boxCol].render());
-			texturesFromTextBoxes.at(boxRow).at(boxCol) = Texture;
-			gl::draw(texturesFromTextBoxes[boxRow][boxCol]);
-
-			if (isBlack.at(0).at(0) == true && isBlack.at(0).at(1) == true && isBlack.at(0).at(2) == true && isBlack.at(0).at(3) == true && isBlack.at(0).at(4) == true
-				|| isBlack.at(1).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(1).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(1).at(4) == true
-				|| isBlack.at(2).at(0) == true && isBlack.at(2).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(2).at(3) == true && isBlack.at(2).at(4) == true
-				|| isBlack.at(3).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(3).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(3).at(4) == true
-				|| isBlack.at(4).at(0) == true && isBlack.at(4).at(1) == true && isBlack.at(4).at(2) == true && isBlack.at(4).at(3) == true && isBlack.at(4).at(4) == true
-
-				|| isBlack.at(0).at(0) == true && isBlack.at(1).at(0) == true && isBlack.at(2).at(0) == true && isBlack.at(3).at(0) == true && isBlack.at(4).at(0) == true
-				|| isBlack.at(0).at(1) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(1) == true && isBlack.at(3).at(1) == true && isBlack.at(4).at(1) == true
-				|| isBlack.at(0).at(2) == true && isBlack.at(1).at(2) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(2) == true && isBlack.at(4).at(2) == true
-				|| isBlack.at(0).at(3) == true && isBlack.at(1).at(3) == true && isBlack.at(2).at(3) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(3) == true
-
-				|| isBlack.at(0).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(4) == true
-				|| isBlack.at(4).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(0).at(4) == true) {
-
-				mVoice->start();
-			}
-		}
-		if (x > 375 && x < 525 && y > 925 && y < 965) {
-			setup();
-		}
+		gl::draw(winningTexture, vec2(200, 130));
 	}
 }
 
