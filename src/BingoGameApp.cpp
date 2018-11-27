@@ -26,8 +26,7 @@ public:
 
 	void mouseUp(MouseEvent event) override;
 
-	// 2D-Vector, represents the board
-	vector<vector<string>> board;
+	vector<string> clone;
 	// Several strings, for usage within the bingo board. These strings are stored and used in a cloned vector.
 	vector<string> bsCases = {
 		"A",
@@ -74,13 +73,13 @@ public:
 
 void BingoGameApp::setup()
 {
-	string header = "DAS EPISCHSTE BINGO-SPIEL ALLER ZEITEN!";
+	string header = "DAS EPISCHE MAGIX-BULLSHIT-BINGO!";
 	TextBox tBoxSetup = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 40)).size(ivec2(700, 40)).text(header);
 	tBoxSetup.setColor(Color(0.03f, 0.03f, 0.03f));
 	tBoxSetup.setBackgroundColor(Color(0.85f, 0.55f, 0.32f));
 	headerTexture = gl::Texture2d::create(tBoxSetup.render());
 
-	tBoxSetup.setText("YEAH, DU HAST GEWONNEN!ABER LEIDER GIBTS KEINEN PREIS.SPIEL DOCH EINFACH NOCHMAL!");
+	tBoxSetup.setText("YEAH, DU HAST GEWONNEN!ABER LEIDER GIBTS KEINEN PREIS. SPIEL DOCH EINFACH NOCHMAL!");
 	tBoxSetup.setFont(Font("Helvetica", 32));
 	tBoxSetup.setSize(vec2(360, 120));
 	tBoxSetup.setColor(Color(1.0f, 0.839f, 0.0f));
@@ -88,13 +87,12 @@ void BingoGameApp::setup()
 	winningTexture = gl::Texture2d::create(tBoxSetup.render());
 
 	tBoxSetup.setText("Neustarten");
-	tBoxSetup.setFont(Font("Helvetica", 32));
 	tBoxSetup.setSize(vec2(150, 40));
 	tBoxSetup.setColor(Color(0.03f, 0.03f, 0.03f));
 	tBoxSetup.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
 	restartTexture = gl::Texture2d::create(tBoxSetup.render());
 
-	audio::SourceFileRef sourceFile = audio::load(app::loadAsset("win.mp3"));
+	audio::SourceFileRef sourceFile = audio::load(app::loadAsset("test.mp3"));
 	mVoice = audio::Voice::create(sourceFile);
 	mVoice->setVolume(15);
 
@@ -115,36 +113,16 @@ void BingoGameApp::setup()
 void BingoGameApp::randomizeBoard() {
 
 	// Clear board in case of another started game
-	board.clear();
+	clone.clear();
 	// Resize and clone vector from board, this vector will be used for randomization
-	vector<string> cloned;
-	cloned.resize(bsCases.size());
+	clone.resize(bsCases.size());
 
-	copy(begin(bsCases), end(bsCases), begin(cloned));
+	copy(begin(bsCases), end(bsCases), begin(clone));
 
-	// Iterate over all fields and give a string to every field
-	for (int x = 0; x <= 4; x++) {
-		board.push_back(vector<string>());
-		for (int y = 0; y <= 4; y++) {
-			// Joker in the middle of the field
-			if (x == 2 && y == 2) {
-				board[x].push_back("JOKER!");
-			}
-			else {
-				// Set a random variable and shuffle the cloned vector with every iteration
-				unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-				std::default_random_engine randomEveryTime(seed);
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::default_random_engine randomEveryTime(seed);
 
-				shuffle(begin(cloned), end(cloned), randomEveryTime);
-				// Push back every first element of the vector
-				board[x].push_back(cloned.at(0));
-				// Erase used element. This prevents the use of the same element multiple times
-				cloned.erase(cloned.begin());
-			}
-		}
-	}
-	// Clear cloned vector (really necessary?)
-	cloned.clear();
+	shuffle(begin(clone), end(clone), randomEveryTime);
 }
 
 cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
@@ -170,7 +148,16 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 
 			// Creates a Textbox, setting color of the text and the background. 
 			// Uses the strings from the bsCases-Vector.
-			TextBox tbox = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 32)).size(ivec2(158, 158)).text(board[x][y]);
+			int textSize;
+			if (clone.at(0).length() > 30) {
+				textSize = 27;
+			}
+			else {
+				textSize = 32;
+			}
+
+			TextBox tbox = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", textSize)).size(ivec2(158, 158)).text(clone.at(0));
+			clone.erase(clone.begin());
 			if(x == 2 && y == 2) {
 				isBlack[x].push_back(true);
 				tbox.setColor(Color(0.96f, 0.96f, 0.96f));
