@@ -94,7 +94,7 @@ void BingoGameApp::setup()
 	tBoxSetup.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
 	restartTexture = gl::Texture2d::create(tBoxSetup.render());
 
-	audio::SourceFileRef sourceFile = audio::load(app::loadAsset("win.mp3"));
+	audio::SourceFileRef sourceFile = audio::load(app::loadAsset("Burp.mp3"));
 	mVoice = audio::Voice::create(sourceFile);
 	mVoice->setVolume(11);
 
@@ -206,13 +206,7 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 				int boxRow = (y - 101) / 160;
 				int boxCol = (x - 51) / 160;
 
-				int cloneIndex;
-				if (boxRow == 0) {
-					cloneIndex = boxCol;
-				}
-				else {
-					cloneIndex = (boxRow * 5) + boxCol;
-				}
+				int cloneIndex = (boxRow * 5) + boxCol;
 
 				isBlack.at(boxRow).at(boxCol) = true;
 
