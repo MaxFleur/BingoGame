@@ -16,7 +16,6 @@ using namespace std;
 
 class BingoGameApp : public App {
 public:
-
 	void setup() override;
 	void draw() override;
 	// Function to randomize the Bingo Board
@@ -53,10 +52,12 @@ public:
 		"V",
 		"W",
 		"X",
-		"Y"
+		"Y",
+		"Z",
+		"AA"
 	};
 
-	vector<vector<TextBox>> textBoxes; 
+	TextBox bfT;
 
 	vector<vector<bool>> isBlack;
 	bool restart;
@@ -93,9 +94,9 @@ void BingoGameApp::setup()
 	tBoxSetup.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
 	restartTexture = gl::Texture2d::create(tBoxSetup.render());
 
-	audio::SourceFileRef sourceFile = audio::load(app::loadAsset("test.mp3"));
+	audio::SourceFileRef sourceFile = audio::load(app::loadAsset("win.mp3"));
 	mVoice = audio::Voice::create(sourceFile);
-	mVoice->setVolume(15);
+	mVoice->setVolume(11);
 
 	// Load Board image and create a matrix
 	ci::Surface8u surface(loadImage(loadAsset("BoardGround.jpg")));
@@ -117,13 +118,16 @@ void BingoGameApp::randomizeBoard() {
 	clone.clear();
 	// Resize and clone vector from board, this vector will be used for randomization
 	clone.resize(bsCases.size());
-
 	copy(begin(bsCases), end(bsCases), begin(clone));
 
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine randomEveryTime(seed);
 
 	shuffle(begin(clone), end(clone), randomEveryTime);
+
+	clone.resize(25);
+	clone.at(12) = "JOKER!";
+	int a = 0;
 }
 
 cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
@@ -131,53 +135,51 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 	// Clear size of textboxes and reserve them 25 fields
 	texturesFromTextBoxes.clear();
 	texturesFromTextBoxes.reserve(25);
-
-	textBoxes.clear();
-	textBoxes.reserve(25);
-
 	isBlack.clear();
+
+	bfT.setAlignment(TextBox::CENTER);
+	bfT.setSize(ivec2(158, 158));
 
 	// Iterates over the board, creating textboxes and square meshes.
 	int height = 100;
+	int cloneIndex = 0;
 	for (int x = 0; x <= 4; x++) {
 		int width = 50;
 		texturesFromTextBoxes.push_back(vector<gl::TextureRef>());
-		textBoxes.push_back(vector<TextBox>());
 		isBlack.push_back(vector<bool>());
 
 		for (int y = 0; y <= 4; y++) {
 
-			// Creates a Textbox, setting color of the text and the background. 
-			// Uses the strings from the bsCases-Vector.
 			int textSize;
-			if (clone.at(0).length() > 30) {
+			if (clone.at(cloneIndex).length() > 30) {
 				textSize = 27;
 			}
 			else {
 				textSize = 32;
 			}
 
-			TextBox tbox = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", textSize)).size(ivec2(158, 158)).text(clone.at(0));
-			clone.erase(clone.begin());
+			bfT.setFont(Font("Helvetica", textSize));
+			bfT.setText(clone.at(cloneIndex));
 			if(x == 2 && y == 2) {
 				isBlack[x].push_back(true);
-				tbox.setColor(Color(0.96f, 0.96f, 0.96f));
-				tbox.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
+				bfT.setColor(Color(0.96f, 0.96f, 0.96f));
+				bfT.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
 			}
 			else {
 				isBlack[x].push_back(false);
-				tbox.setColor(Color(0.0f, 0.0f, 0.0f));
-				tbox.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
+				bfT.setColor(Color(0.0f, 0.0f, 0.0f));
+				bfT.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
 			}
-			textBoxes[x].push_back(tbox);
 			// Create a texture for every testbox and store it for later drawing
-			gl::TextureRef Texture = gl::Texture2d::create(tbox.render());
+			gl::TextureRef Texture = gl::Texture2d::create(bfT.render());
 			texturesFromTextBoxes[x].push_back(Texture);
 
 			// Draws the square meshes over the field
 			cv::Rect r = cv::Rect(width, height, 160, 160);
 			cv::rectangle(input, r, cv::Scalar(80, 80, 80), 2, cv::LINE_8, 0);
+
 			width += 160;
+			cloneIndex++;
 		}
 		height += 160;
 	}
@@ -204,12 +206,21 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 				int boxRow = (y - 101) / 160;
 				int boxCol = (x - 51) / 160;
 
+				int cloneIndex;
+				if (boxRow == 0) {
+					cloneIndex = boxCol;
+				}
+				else {
+					cloneIndex = (boxRow * 5) + boxCol;
+				}
+
 				isBlack.at(boxRow).at(boxCol) = true;
 
-				textBoxes[boxRow][boxCol].setColor(Color(0.96f, 0.96f, 0.96f));
-				textBoxes[boxRow][boxCol].setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
+				bfT.setText(clone.at(cloneIndex));
+				bfT.setColor(Color(0.96f, 0.96f, 0.96f));
+				bfT.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
 
-				gl::TextureRef Texture = gl::Texture2d::create(textBoxes[boxRow][boxCol].render());
+				gl::TextureRef Texture = gl::Texture2d::create(bfT.render());
 				texturesFromTextBoxes.at(boxRow).at(boxCol) = Texture;
 				gl::draw(texturesFromTextBoxes[boxRow][boxCol]);
 
