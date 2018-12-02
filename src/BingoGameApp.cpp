@@ -94,7 +94,7 @@ void BingoGameApp::setup()
 	tBoxSetup.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
 	restartTexture = gl::Texture2d::create(tBoxSetup.render());
 
-	audio::SourceFileRef sourceFile = audio::load(app::loadAsset("Burp.mp3"));
+	audio::SourceFileRef sourceFile = audio::load(app::loadAsset("win.mp3"));
 	mVoice = audio::Voice::create(sourceFile);
 	mVoice->setVolume(11);
 
