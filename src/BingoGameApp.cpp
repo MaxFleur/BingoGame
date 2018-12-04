@@ -96,7 +96,7 @@ void BingoGameApp::setup()
 
 	audio::SourceFileRef sourceFile = audio::load(app::loadAsset("win.mp3"));
 	mVoice = audio::Voice::create(sourceFile);
-	mVoice->setVolume(11);
+	mVoice->setVolume(8);
 
 	// Load Board image and create a matrix
 	ci::Surface8u surface(loadImage(loadAsset("BoardGround.jpg")));
@@ -138,7 +138,7 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 	isBlack.clear();
 
 	bfT.setAlignment(TextBox::CENTER);
-	bfT.setSize(ivec2(158, 158));
+	bfT.setSize(ivec2(157, 157));
 
 	// Iterates over the board, creating textboxes and square meshes.
 	int height = 100;
@@ -198,10 +198,12 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 			restart = false;
 		}
 		else {
-			int x = event.getX();
-			int y = event.getY();
+			float x = event.getX();
+			float y = event.getY();
 
-			if (x < 849 && x > 50 && y < 900 && y > 100) {
+			if (x < 848 && x > 51 && y < 899 && y > 101
+				&& fmod(x - 50, 160) < 158 && fmod(x - 50, 160) > 1
+				&& fmod(y - 100, 160) < 159 && fmod(y - 100, 160) > 1) {
 
 				int boxRow = (y - 101) / 160;
 				int boxCol = (x - 51) / 160;
@@ -228,6 +230,7 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 					|| isBlack.at(0).at(1) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(1) == true && isBlack.at(3).at(1) == true && isBlack.at(4).at(1) == true
 					|| isBlack.at(0).at(2) == true && isBlack.at(1).at(2) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(2) == true && isBlack.at(4).at(2) == true
 					|| isBlack.at(0).at(3) == true && isBlack.at(1).at(3) == true && isBlack.at(2).at(3) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(3) == true
+					|| isBlack.at(0).at(4) == true && isBlack.at(1).at(4) == true && isBlack.at(2).at(4) == true && isBlack.at(3).at(4) == true && isBlack.at(4).at(4) == true
 
 					|| isBlack.at(0).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(4) == true
 					|| isBlack.at(4).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(0).at(4) == true) {
@@ -272,6 +275,7 @@ void BingoGameApp::draw()
 		|| isBlack.at(0).at(1) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(1) == true && isBlack.at(3).at(1) == true && isBlack.at(4).at(1) == true
 		|| isBlack.at(0).at(2) == true && isBlack.at(1).at(2) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(2) == true && isBlack.at(4).at(2) == true
 		|| isBlack.at(0).at(3) == true && isBlack.at(1).at(3) == true && isBlack.at(2).at(3) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(3) == true
+		|| isBlack.at(0).at(4) == true && isBlack.at(1).at(4) == true && isBlack.at(2).at(4) == true && isBlack.at(3).at(4) == true && isBlack.at(4).at(4) == true
 
 		|| isBlack.at(0).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(4) == true
 		|| isBlack.at(4).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(0).at(4) == true) {
