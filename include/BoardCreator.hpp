@@ -3,7 +3,6 @@
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 #include "CinderOpenCv.h"
-#include "Randomizer.hpp"
 
 class BoardCreator {
 public:
