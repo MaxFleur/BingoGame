@@ -9,15 +9,20 @@ public:
 	Randomizer() {};
 	~Randomizer() {};
 
+	//Randomize the board
 	void randomize() {
 
+		// Shuffle the source vector
 		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 		std::default_random_engine randomEveryTime(seed);
 		shuffle(begin(source), end(source), randomEveryTime);
 
+		// Clear entrys before another run
 		entrys.clear();
+		// Then copy the first 25 elements of source into entrys
 		for (int i = 0; i < 25; i++) {
 			if (i == 12) {
+				// Joker for entry in the board center
 				entrys.push_back("JOKER!");
 			}
 			else {
@@ -29,8 +34,10 @@ public:
 	std::vector<std::string> getEntrys() { return entrys; }
 
 private:
+
+	// Entrys used for board
 	std::vector<std::string> entrys;
-	// Several strings, for usage within the bingo board. These strings are stored and used in a cloned vector.
+	// Source vector, contains several strings
 	std::vector<std::string> source = {
 		"A",
 		"B",
