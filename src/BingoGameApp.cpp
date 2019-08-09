@@ -6,10 +6,10 @@
 #include "cinder/ImageIo.h"
 #include "cinder/audio/audio.h"
 #include <algorithm>
-#include <assert.h>
 
 #include "Randomizer.hpp"
 #include "BoardCreator.hpp"
+#include "BlackLineSearch.hpp"
 
 #include "CinderOpenCv.h"
 
@@ -38,12 +38,14 @@ public:
 
 	RandomizerRef r;
 	BoardCreatorRef bC;
+	BLSRef bLS;
 };
 
 void BingoGameApp::setup()
 {
-	r	= std::make_shared<Randomizer>();
-	bC	= std::make_shared<BoardCreator>();
+	r		= std::make_shared<Randomizer>();
+	bC		= std::make_shared<BoardCreator>();
+	bLS		= std::make_shared<BlackLineSearch>();
 
 	string header = "DAS EPISCHSTE BULLSHIT-BINGO DER WELT!";
 	TextBox tBoxSetup = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 40)).size(ivec2(700, 40)).text(header);
@@ -79,53 +81,6 @@ void BingoGameApp::setup()
 	// Create a texture from all stuff and set the windows to the actual board size
 	mTexture = gl::Texture2d::create(fromOcv(input));
 	setWindowSize(surface.getWidth(), surface.getHeight());
-
-}
-
-bool searchForBlackLine(const vector<vector<bool>>& isBlack) {
-	// works for any n x m matrix with n > 0 and m > 0
-	const size_t width = isBlack.size();
-	assert(width > 0);
-	const size_t height = isBlack[0].size();
-	bool hasBlackLine;
-	
-	// search for vertical lines
-	for (int x = 0; x < width; x++) {
-		hasBlackLine = true;
-		for (int y = 0; y < height; y++) {
-			hasBlackLine &= isBlack[x][y];
-		}
-		if (hasBlackLine) {
-			return true;
-		}
-	}
-	
-	// search for horizontal lines
-	for (int y = 0; y < height; y++) {
-		hasBlackLine = true;
-		for (int x = 0; x < width; x++) {
-			hasBlackLine &= isBlack[x][y];
-		}
-		if (hasBlackLine) {
-			return true;
-		}
-	}
-	
-	// search for diagonal lines
-	if (width != height) {
-		return false;
-	}
-	for (int x = 0; x < width; x++) {
-		hasBlackLine &= isBlack[x][x];
-	}
-	if (hasBlackLine) {
-		return true;
-	}
-	hasBlackLine = true;
-	for (int x = 0; x < width; x++) {
-		hasBlackLine &= isBlack[x][width - x - 1];
-	}
-	return hasBlackLine;
 }
 
 void BingoGameApp::mouseUp(MouseEvent event) {
@@ -158,7 +113,7 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 				bC->fieldTextures.at(boxRow).at(boxCol) = Texture;
 				gl::draw(bC->fieldTextures[boxRow][boxCol]);
 				
-				if (searchForBlackLine(bC->isBlack)) {
+				if (bLS->searchForBlackLine(bC->isBlack)) {
 					mVoice->start();
 					restart = true;
 				}
@@ -189,7 +144,7 @@ void BingoGameApp::draw()
 	gl::draw(restartTexture, vec2(375, 925));
 	gl::draw(headerTexture, vec2(100, 20));
 
-	if (searchForBlackLine(bC->isBlack)) {
+	if (bLS->searchForBlackLine(bC->isBlack)) {
 		gl::draw(winningTexture, vec2(200, 130));
 	}
 }
