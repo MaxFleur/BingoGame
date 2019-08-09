@@ -1,0 +1,12 @@
+﻿  BingoGameApp.cpp
+g:\studium und anderer kram in der richtung\studium\10. semester\fhk-kram\cinder\fhk\bingogame\include\randomizer.hpp(14): warning C4244: "Initialisierung": Konvertierung von "_Rep" in "unsigned int", möglicher Datenverlust
+          with
+          [
+              _Rep=std::chrono::system_clock::rep
+          ]
+g:\studium und anderer kram in der richtung\studium\10. semester\fhk-kram\cinder\fhk\bingogame\src\bingogameapp.cpp(115): warning C4244: "Argument": Konvertierung von "int" in "float", möglicher Datenverlust
+g:\studium und anderer kram in der richtung\studium\10. semester\fhk-kram\cinder\fhk\bingogame\src\bingogameapp.cpp(201): warning C4244: "Initialisierung": Konvertierung von "int" in "float", möglicher Datenverlust
+g:\studium und anderer kram in der richtung\studium\10. semester\fhk-kram\cinder\fhk\bingogame\src\bingogameapp.cpp(202): warning C4244: "Initialisierung": Konvertierung von "int" in "float", möglicher Datenverlust
+g:\studium und anderer kram in der richtung\studium\10. semester\fhk-kram\cinder\fhk\bingogame\src\bingogameapp.cpp(208): warning C4244: "Initialisierung": Konvertierung von "float" in "int", möglicher Datenverlust
+g:\studium und anderer kram in der richtung\studium\10. semester\fhk-kram\cinder\fhk\bingogame\src\bingogameapp.cpp(209): warning C4244: "Initialisierung": Konvertierung von "float" in "int", möglicher Datenverlust
+  BingoGame.vcxproj -> G:\Studium und anderer Kram in der Richtung\Studium\10. Semester\FHK-Kram\Cinder\FHK\BingoGame\vc2015\x64\Debug\BingoGame.exe
