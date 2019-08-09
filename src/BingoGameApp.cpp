@@ -9,6 +9,7 @@
 #include <assert.h>
 
 #include "Randomizer.hpp"
+#include "BoardCreator.hpp"
 
 #include "CinderOpenCv.h"
 
@@ -20,14 +21,9 @@ class BingoGameApp : public App {
 public:
 	void setup() override;
 	void draw() override;
-	// Draw some square meshes and create textboxes für the bingo fields
-	cv::Mat drawSquares(cv::Mat input);
 
 	void mouseUp(MouseEvent event) override;
 
-	TextBox bfT;
-
-	vector<vector<bool>> isBlack;
 	bool restart;
 
 	// 2D-Vector for the textBoxes used over the bingo board
@@ -41,11 +37,13 @@ public:
 	audio::VoiceRef mVoice;
 
 	RandomizerRef r;
+	BoardCreatorRef bC;
 };
 
 void BingoGameApp::setup()
 {
-	r = std::make_shared<Randomizer>();
+	r	= std::make_shared<Randomizer>();
+	bC	= std::make_shared<BoardCreator>();
 
 	string header = "DAS EPISCHSTE BULLSHIT-BINGO DER WELT!";
 	TextBox tBoxSetup = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 40)).size(ivec2(700, 40)).text(header);
@@ -76,72 +74,12 @@ void BingoGameApp::setup()
 
 	// randomizes the strings and draws square meshes over the board
 	r->randomize();
-	cv::Mat output = drawSquares(input);
+	cv::Mat output = bC->createBoard(input, r->getEntrys());
 
 	// Create a texture from all stuff and set the windows to the actual board size
 	mTexture = gl::Texture2d::create(fromOcv(input));
 	setWindowSize(surface.getWidth(), surface.getHeight());
 
-}
-
-cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
-
-	// Clear size of textboxes and reserve them 25 fields
-	texturesFromTextBoxes.clear();
-	texturesFromTextBoxes.reserve(25);
-	isBlack.clear();
-
-	bfT.setAlignment(TextBox::CENTER);
-	bfT.setSize(ivec2(157, 157));
-
-	// Iterates over the board, creating textboxes and square meshes.
-	int height = 100;
-	int cloneIndex = 0;
-	for (int x = 0; x <= 4; x++) {
-		int width = 50;
-		texturesFromTextBoxes.push_back(vector<gl::TextureRef>());
-		isBlack.push_back(vector<bool>());
-
-		for (int y = 0; y <= 4; y++) {
-
-			int textSize;
-			if (r->getEntrys().at(cloneIndex).length() > 30) {
-				textSize = 27;
-			}
-			else {
-				textSize = 32;
-			}
-
-			bfT.setFont(Font("Helvetica", textSize));
-			bfT.setText(r->getEntrys().at(cloneIndex));
-			if(x == 2 && y == 2) {
-				isBlack[x].push_back(true);
-				bfT.setColor(Color(0.96f, 0.96f, 0.96f));
-				bfT.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
-			}
-			else {
-				isBlack[x].push_back(false);
-				bfT.setColor(Color(0.0f, 0.0f, 0.0f));
-				bfT.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
-			}
-			// Create a texture for every testbox and store it for later drawing
-			gl::TextureRef Texture = gl::Texture2d::create(bfT.render());
-			texturesFromTextBoxes[x].push_back(Texture);
-
-			// Draws the square meshes over the field
-			cv::Rect r = cv::Rect(width, height, 160, 160);
-			cv::rectangle(input, r, cv::Scalar(80, 80, 80), 2, cv::LINE_8, 0);
-
-			width += 160;
-			cloneIndex++;
-		}
-		height += 160;
-	}
-	cv::Rect r = cv::Rect(375, 925, 150, 40);
-	cv::rectangle(input, r, cv::Scalar(80, 80, 80), 3, cv::LINE_8, 0);
-	cv::Rect h = cv::Rect(100, 20, 700, 40);
-	cv::rectangle(input, h, cv::Scalar(80, 80, 80), 3, cv::LINE_8, 0);
-	return input;
 }
 
 bool searchForBlackLine(const vector<vector<bool>>& isBlack) {
@@ -210,17 +148,17 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 
 				int cloneIndex = (boxRow * 5) + boxCol;
 
-				isBlack.at(boxRow).at(boxCol) = true;
+				bC->isBlack.at(boxRow).at(boxCol) = true;
 
-				bfT.setText(r->getEntrys().at(cloneIndex));
-				bfT.setColor(Color(0.96f, 0.96f, 0.96f));
-				bfT.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
+				bC->bfT.setText(r->getEntrys().at(cloneIndex));
+				bC->bfT.setColor(Color(0.96f, 0.96f, 0.96f));
+				bC->bfT.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
 
-				gl::TextureRef Texture = gl::Texture2d::create(bfT.render());
-				texturesFromTextBoxes.at(boxRow).at(boxCol) = Texture;
-				gl::draw(texturesFromTextBoxes[boxRow][boxCol]);
+				gl::TextureRef Texture = gl::Texture2d::create(bC->bfT.render());
+				bC->texturesFromTextBoxes.at(boxRow).at(boxCol) = Texture;
+				gl::draw(bC->texturesFromTextBoxes[boxRow][boxCol]);
 				
-				if (searchForBlackLine(isBlack)) {
+				if (searchForBlackLine(bC->isBlack)) {
 					mVoice->start();
 					restart = true;
 				}
@@ -242,7 +180,7 @@ void BingoGameApp::draw()
 	for (int x = 0; x <= 4; x++) {
 		int width = 51;
 		for (int y = 0; y <= 4; y++) {
-			gl::draw(texturesFromTextBoxes[x][y], vec2(width, height));
+			gl::draw(bC->texturesFromTextBoxes[x][y], vec2(width, height));
 			width += 160;
 		}
 		height += 160;
@@ -251,7 +189,7 @@ void BingoGameApp::draw()
 	gl::draw(restartTexture, vec2(375, 925));
 	gl::draw(headerTexture, vec2(100, 20));
 
-	if (searchForBlackLine(isBlack)) {
+	if (searchForBlackLine(bC->isBlack)) {
 		gl::draw(winningTexture, vec2(200, 130));
 	}
 }

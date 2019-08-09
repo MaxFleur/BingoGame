@@ -102,6 +102,7 @@
   <ItemGroup />
   <ItemGroup />
   <ItemGroup>
+    <ClInclude Include="..\include\BoardCreator.hpp" />
     <ClInclude Include="..\include\Randomizer.hpp" />
     <ClInclude Include="..\include\Resources.h" />
     <ClInclude Include="..\..\..\blocks\OpenCV3\include\CinderOpenCV.h" />
