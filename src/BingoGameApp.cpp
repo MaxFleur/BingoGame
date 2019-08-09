@@ -6,6 +6,7 @@
 #include "cinder/ImageIo.h"
 #include "cinder/audio/audio.h"
 #include <algorithm>
+#include <assert.h>
 #include <random> 
 
 #include "CinderOpenCv.h"
@@ -20,7 +21,7 @@ public:
 	void draw() override;
 	// Function to randomize the Bingo Board
 	void randomizeBoard();
-	// Draw some square meshes and create textboxes für the bingo fields
+	// Draw some square meshes and create textboxes fÃ¼r the bingo fields
 	cv::Mat drawSquares(cv::Mat input);
 
 	void mouseUp(MouseEvent event) override;
@@ -190,6 +191,52 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 	return input;
 }
 
+bool searchForBlackLine(const vector<vector<bool>>& isBlack) {
+	// works for any n x m matrix with n > 0 and m > 0
+	const size_t width = isBlack.size();
+	assert(width > 0);
+	const size_t height = isBlack[0].size();
+	bool hasBlackLine;
+	
+	// search for vertical lines
+	for (int x = 0; x < width; x++) {
+		hasBlackLine = true;
+		for (int y = 0; y < height; y++) {
+			hasBlackLine &= isBlack[x][y];
+		}
+		if (hasBlackLine) {
+			return true;
+		}
+	}
+	
+	// search for horizontal lines
+	for (int y = 0; y < height; y++) {
+		hasBlackLine = true;
+		for (int x = 0; x < width; x++) {
+			hasBlackLine &= isBlack[x][y];
+		}
+		if (hasBlackLine) {
+			return true;
+		}
+	}
+	
+	// search for diagonal lines
+	if (width != height) {
+		return false;
+	}
+	for (int x = 0; x < width; x++) {
+		hasBlackLine &= isBlack[x][x];
+	}
+	if (hasBlackLine) {
+		return true;
+	}
+	hasBlackLine = true;
+	for (int x = 0; x < width; x++) {
+		hasBlackLine &= isBlack[x][width - x - 1];
+	}
+	return hasBlackLine;
+}
+
 void BingoGameApp::mouseUp(MouseEvent event) {
 
 	if (event.isLeft()) {
@@ -219,22 +266,8 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 				gl::TextureRef Texture = gl::Texture2d::create(bfT.render());
 				texturesFromTextBoxes.at(boxRow).at(boxCol) = Texture;
 				gl::draw(texturesFromTextBoxes[boxRow][boxCol]);
-
-				if (isBlack.at(0).at(0) == true && isBlack.at(0).at(1) == true && isBlack.at(0).at(2) == true && isBlack.at(0).at(3) == true && isBlack.at(0).at(4) == true
-					|| isBlack.at(1).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(1).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(1).at(4) == true
-					|| isBlack.at(2).at(0) == true && isBlack.at(2).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(2).at(3) == true && isBlack.at(2).at(4) == true
-					|| isBlack.at(3).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(3).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(3).at(4) == true
-					|| isBlack.at(4).at(0) == true && isBlack.at(4).at(1) == true && isBlack.at(4).at(2) == true && isBlack.at(4).at(3) == true && isBlack.at(4).at(4) == true
-
-					|| isBlack.at(0).at(0) == true && isBlack.at(1).at(0) == true && isBlack.at(2).at(0) == true && isBlack.at(3).at(0) == true && isBlack.at(4).at(0) == true
-					|| isBlack.at(0).at(1) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(1) == true && isBlack.at(3).at(1) == true && isBlack.at(4).at(1) == true
-					|| isBlack.at(0).at(2) == true && isBlack.at(1).at(2) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(2) == true && isBlack.at(4).at(2) == true
-					|| isBlack.at(0).at(3) == true && isBlack.at(1).at(3) == true && isBlack.at(2).at(3) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(3) == true
-					|| isBlack.at(0).at(4) == true && isBlack.at(1).at(4) == true && isBlack.at(2).at(4) == true && isBlack.at(3).at(4) == true && isBlack.at(4).at(4) == true
-
-					|| isBlack.at(0).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(4) == true
-					|| isBlack.at(4).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(0).at(4) == true) {
-
+				
+				if (searchForBlackLine(isBlack)) {
 					mVoice->start();
 					restart = true;
 				}
@@ -265,21 +298,7 @@ void BingoGameApp::draw()
 	gl::draw(restartTexture, vec2(375, 925));
 	gl::draw(headerTexture, vec2(100, 20));
 
-	if (isBlack.at(0).at(0) == true && isBlack.at(0).at(1) == true && isBlack.at(0).at(2) == true && isBlack.at(0).at(3) == true && isBlack.at(0).at(4) == true
-		|| isBlack.at(1).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(1).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(1).at(4) == true
-		|| isBlack.at(2).at(0) == true && isBlack.at(2).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(2).at(3) == true && isBlack.at(2).at(4) == true
-		|| isBlack.at(3).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(3).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(3).at(4) == true
-		|| isBlack.at(4).at(0) == true && isBlack.at(4).at(1) == true && isBlack.at(4).at(2) == true && isBlack.at(4).at(3) == true && isBlack.at(4).at(4) == true
-
-		|| isBlack.at(0).at(0) == true && isBlack.at(1).at(0) == true && isBlack.at(2).at(0) == true && isBlack.at(3).at(0) == true && isBlack.at(4).at(0) == true
-		|| isBlack.at(0).at(1) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(1) == true && isBlack.at(3).at(1) == true && isBlack.at(4).at(1) == true
-		|| isBlack.at(0).at(2) == true && isBlack.at(1).at(2) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(2) == true && isBlack.at(4).at(2) == true
-		|| isBlack.at(0).at(3) == true && isBlack.at(1).at(3) == true && isBlack.at(2).at(3) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(3) == true
-		|| isBlack.at(0).at(4) == true && isBlack.at(1).at(4) == true && isBlack.at(2).at(4) == true && isBlack.at(3).at(4) == true && isBlack.at(4).at(4) == true
-
-		|| isBlack.at(0).at(0) == true && isBlack.at(1).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(3).at(3) == true && isBlack.at(4).at(4) == true
-		|| isBlack.at(4).at(0) == true && isBlack.at(3).at(1) == true && isBlack.at(2).at(2) == true && isBlack.at(1).at(3) == true && isBlack.at(0).at(4) == true) {
-
+	if (searchForBlackLine(isBlack)) {
 		gl::draw(winningTexture, vec2(200, 130));
 	}
 }
