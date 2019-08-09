@@ -7,7 +7,8 @@
 #include "cinder/audio/audio.h"
 #include <algorithm>
 #include <assert.h>
-#include <random> 
+
+#include "Randomizer.hpp"
 
 #include "CinderOpenCv.h"
 
@@ -19,44 +20,10 @@ class BingoGameApp : public App {
 public:
 	void setup() override;
 	void draw() override;
-	// Function to randomize the Bingo Board
-	void randomizeBoard();
 	// Draw some square meshes and create textboxes für the bingo fields
 	cv::Mat drawSquares(cv::Mat input);
 
 	void mouseUp(MouseEvent event) override;
-
-	vector<string> clone;
-	// Several strings, for usage within the bingo board. These strings are stored and used in a cloned vector.
-	vector<string> bsCases = {
-		"A",
-		"B",
-		"C",
-		"D",
-		"E",
-		"F",
-		"G",
-		"H",
-		"I",
-		"J",
-		"K",
-		"L",
-		"M",
-		"N",
-		"O",
-		"P",
-		"Q",
-		"R",
-		"S",
-		"T",
-		"U",
-		"V",
-		"W",
-		"X",
-		"Y",
-		"Z",
-		"AA"
-	};
 
 	TextBox bfT;
 
@@ -72,10 +39,14 @@ public:
 	gl::TextureRef headerTexture;
 
 	audio::VoiceRef mVoice;
+
+	RandomizerRef r;
 };
 
 void BingoGameApp::setup()
 {
+	r = std::make_shared<Randomizer>();
+
 	string header = "DAS EPISCHSTE BULLSHIT-BINGO DER WELT!";
 	TextBox tBoxSetup = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 40)).size(ivec2(700, 40)).text(header);
 	tBoxSetup.setColor(Color(0.03f, 0.03f, 0.03f));
@@ -104,31 +75,13 @@ void BingoGameApp::setup()
 	cv::Mat input(toOcv(surface));
 
 	// randomizes the strings and draws square meshes over the board
-	randomizeBoard();
+	r->randomize();
 	cv::Mat output = drawSquares(input);
 
 	// Create a texture from all stuff and set the windows to the actual board size
 	mTexture = gl::Texture2d::create(fromOcv(input));
 	setWindowSize(surface.getWidth(), surface.getHeight());
 
-}
-
-void BingoGameApp::randomizeBoard() {
-
-	// Clear board in case of another started game
-	clone.clear();
-	// Resize and clone vector from board, this vector will be used for randomization
-	clone.resize(bsCases.size());
-	copy(begin(bsCases), end(bsCases), begin(clone));
-
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	std::default_random_engine randomEveryTime(seed);
-
-	shuffle(begin(clone), end(clone), randomEveryTime);
-
-	clone.resize(25);
-	clone.at(12) = "JOKER!";
-	int a = 0;
 }
 
 cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
@@ -152,7 +105,7 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 		for (int y = 0; y <= 4; y++) {
 
 			int textSize;
-			if (clone.at(cloneIndex).length() > 30) {
+			if (r->getEntrys().at(cloneIndex).length() > 30) {
 				textSize = 27;
 			}
 			else {
@@ -160,7 +113,7 @@ cv::Mat BingoGameApp::drawSquares(cv::Mat input) {
 			}
 
 			bfT.setFont(Font("Helvetica", textSize));
-			bfT.setText(clone.at(cloneIndex));
+			bfT.setText(r->getEntrys().at(cloneIndex));
 			if(x == 2 && y == 2) {
 				isBlack[x].push_back(true);
 				bfT.setColor(Color(0.96f, 0.96f, 0.96f));
@@ -259,7 +212,7 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 
 				isBlack.at(boxRow).at(boxCol) = true;
 
-				bfT.setText(clone.at(cloneIndex));
+				bfT.setText(r->getEntrys().at(cloneIndex));
 				bfT.setColor(Color(0.96f, 0.96f, 0.96f));
 				bfT.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
 
