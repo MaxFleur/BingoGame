@@ -150,13 +150,13 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 
 				bC->isBlack.at(boxRow).at(boxCol) = true;
 
-				bC->bfT.setText(r->getEntrys().at(cloneIndex));
-				bC->bfT.setColor(Color(0.96f, 0.96f, 0.96f));
-				bC->bfT.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
+				bC->textBox.setText(r->getEntrys().at(cloneIndex));
+				bC->textBox.setColor(Color(0.96f, 0.96f, 0.96f));
+				bC->textBox.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
 
-				gl::TextureRef Texture = gl::Texture2d::create(bC->bfT.render());
-				bC->texturesFromTextBoxes.at(boxRow).at(boxCol) = Texture;
-				gl::draw(bC->texturesFromTextBoxes[boxRow][boxCol]);
+				gl::TextureRef Texture = gl::Texture2d::create(bC->textBox.render());
+				bC->fieldTextures.at(boxRow).at(boxCol) = Texture;
+				gl::draw(bC->fieldTextures[boxRow][boxCol]);
 				
 				if (searchForBlackLine(bC->isBlack)) {
 					mVoice->start();
@@ -180,7 +180,7 @@ void BingoGameApp::draw()
 	for (int x = 0; x <= 4; x++) {
 		int width = 51;
 		for (int y = 0; y <= 4; y++) {
-			gl::draw(bC->texturesFromTextBoxes[x][y], vec2(width, height));
+			gl::draw(bC->fieldTextures[x][y], vec2(width, height));
 			width += 160;
 		}
 		height += 160;
