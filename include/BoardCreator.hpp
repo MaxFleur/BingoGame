@@ -1,5 +1,11 @@
-#pragma once
 
+// Creates the bingo board (textures, game text)
+//
+// Code provided by MaxFleur
+// https://github.com/MaxFleur
+
+
+#pragma once
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 #include "CinderOpenCv.h"

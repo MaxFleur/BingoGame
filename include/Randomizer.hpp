@@ -1,5 +1,11 @@
-#pragma once
 
+// Randomizes vector entrys, the randomied entrys are used for the bingo fields
+//
+// Code provided by MaxFleur
+// https://github.com/MaxFleur
+
+
+#pragma once
 #include <random> 
 #include <vector>
 #include <string>

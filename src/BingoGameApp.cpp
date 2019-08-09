@@ -1,4 +1,9 @@
-/*Bingo Game, written in C++. Uses LibCinder and OpenCV. Work in progress.*/
+
+//Bingo Game, written in C++. Uses LibCinder and OpenCV. Work in progress.
+//
+// Code provided by MaxFleur
+// https://github.com/MaxFleur
+
 
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
