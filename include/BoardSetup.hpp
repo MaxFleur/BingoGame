@@ -10,10 +10,10 @@
 #include "cinder/gl/gl.h"
 #include "CinderOpenCv.h"
 
-class BoardCreator {
+class BoardSetup {
 public:
-	BoardCreator() {};
-	~BoardCreator() {};
+	BoardSetup() {};
+	~BoardSetup() {};
 
 	cv::Mat createBoard(cv::Mat input, std::vector<std::string> entrys) {
 		// Clear and reserve
@@ -83,4 +83,4 @@ public:
 	// Stores fields clicked on
 	std::vector<std::vector<bool>> isBlack;
 };
-using BoardCreatorRef = std::shared_ptr<BoardCreator>;
+using BoardCreatorRef = std::shared_ptr<BoardSetup>;
