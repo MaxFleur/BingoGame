@@ -49,7 +49,7 @@ void BingoGameApp::setup()
 	// randomizes the strings and draws square meshes over the board
 	r->randomize();
 	bS->setup();
-	cv::Mat output = bS->createBoard(input, r->getEntrys());
+	bS->createBoard(input, r->getEntrys());
 
 	// Create a texture from all stuff and set the windows to the actual board size
 	mTexture = gl::Texture2d::create(fromOcv(input));

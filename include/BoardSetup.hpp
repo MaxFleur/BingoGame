@@ -19,31 +19,32 @@ public:
 	~BoardSetup() {};
 
 	void setup() {
+		// Set header text, color and background
 		std::string header = "DAS EPISCHSTE BULLSHIT-BINGO DER WELT!";
 		TextBox tBoxSetup = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 40)).size(ivec2(700, 40)).text(header);
 		tBoxSetup.setColor(Color(0.03f, 0.03f, 0.03f));
 		tBoxSetup.setBackgroundColor(Color(0.85f, 0.55f, 0.32f));
 		headerTexture = gl::Texture2d::create(tBoxSetup.render());
-
+		// Same for winning text
 		tBoxSetup.setText("YEAH, DU HAST GEWONNEN! \nABER LEIDER GIBTS KEINEN PREIS. \nSPIEL DOCH EINFACH NOCHMAL! \nKLICKE, UM DAS SPIEL NEUZUSTARTEN.");
 		tBoxSetup.setFont(Font("Helvetica", 32));
 		tBoxSetup.setSize(vec2(500, 120));
 		tBoxSetup.setColor(Color(1.0f, 0.839f, 0.0f));
 		tBoxSetup.setBackgroundColor(Color(0.289f, 0.125f, 0.23f));
 		winningTexture = gl::Texture2d::create(tBoxSetup.render());
-
+		// Same for restart
 		tBoxSetup.setText("Neustarten");
 		tBoxSetup.setSize(vec2(150, 40));
 		tBoxSetup.setColor(Color(0.03f, 0.03f, 0.03f));
 		tBoxSetup.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
 		restartTexture = gl::Texture2d::create(tBoxSetup.render());
-
+		// Handle audio file
 		ci::audio::SourceFileRef sourceFile = audio::load(app::loadAsset("win.mp3"));
 		mVoice = audio::Voice::create(sourceFile);
 		mVoice->setVolume(8);
 	}
 
-	cv::Mat createBoard(cv::Mat input, std::vector<std::string> entrys) {
+	void createBoard(cv::Mat input, std::vector<std::string> entrys) {
 		// Clear and reserve
 		fieldTextures.clear();
 		fieldTextures.reserve(25);
@@ -103,7 +104,6 @@ public:
 		cv::rectangle(input, r, cv::Scalar(80, 80, 80), 3, cv::LINE_8, 0);
 		cv::Rect h = cv::Rect(100, 20, 700, 40);
 		cv::rectangle(input, h, cv::Scalar(80, 80, 80), 3, cv::LINE_8, 0);
-		return input;
 	}
 
 	std::vector<std::vector<ci::gl::TextureRef>> getFieldTextures() { return fieldTextures; }
