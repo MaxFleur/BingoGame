@@ -66,36 +66,6 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 			restart = false;
 		}
 		else {
-			float x = event.getX();
-			float y = event.getY();
-
-			if (x < 848 && x > 51 && y < 899 && y > 101
-				&& fmod(x - 50, 160) < 158 && fmod(x - 50, 160) > 1
-				&& fmod(y - 100, 160) < 159 && fmod(y - 100, 160) > 1) {
-
-				int boxRow = (y - 101) / 160;
-				int boxCol = (x - 51) / 160;
-
-				int cloneIndex = (boxRow * 5) + boxCol;
-
-				bH->isBlack.at(boxRow).at(boxCol) = true;
-
-				bH->textBox.setText(r->getEntrys().at(cloneIndex));
-				bH->textBox.setColor(Color(0.96f, 0.96f, 0.96f));
-				bH->textBox.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
-
-				gl::TextureRef Texture = gl::Texture2d::create(bH->textBox.render());
-				bH->fieldTextures.at(boxRow).at(boxCol) = Texture;
-				gl::draw(bH->fieldTextures[boxRow][boxCol]);
-				
-				if (bLS->searchForBlackLine(bH->isBlack)) {
-					bH->getVoice()->start();
-					restart = true;
-				}
-			}
-			if (x > 375 && x < 525 && y > 925 && y < 965) {
-				setup();
-			}
 		}
 	}
 }
