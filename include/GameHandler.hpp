@@ -6,18 +6,26 @@
 
 class GameHandler {
 public: 
-	GameHandler();
-	~GameHandler();
+	GameHandler(cv::Mat input) : m_input(input) {};
+	~GameHandler() {};
 
-	void startNewGame(cv::Mat input) {
+	void startNewGame() {
 		r->randomize();
 		bH->setup();
-		bH->createBoard(input, r->getEntrys());
+		bH->createBoard(m_input, r->getEntrys());
 	}
+
+	void drawBoard() {
+		bH->draw();
+	}
+
+	BoardHandlerRef getBoardHandler() { return bH; }
+	RandomizerRef getRandomizer() { return r; }
 
 private:
 	RandomizerRef r = std::make_shared<Randomizer>();
 	BoardHandlerRef bH = std::make_shared<BoardHandler>();
 	BLSRef bLS = std::make_shared<BlackLineSearch>();
+	cv::Mat m_input;
 };
 using GameHandlerRef = std::shared_ptr<GameHandler>;

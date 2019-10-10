@@ -124,11 +124,9 @@ public:
 		// Draw textBoxes, iterating over the board. Height and width are set to 51 to create a more stylish look
 		if (BlackLineSearch::searchForBlackLine(isBlack)) {
 			gl::draw(winningTexture, vec2(200, 130));
+			mVoice->start();
 		}
 	}
-
-	// Winning sound
-	audio::VoiceRef getVoice() { return mVoice; }
 
 	std::vector<std::vector<ci::gl::TextureRef>> fieldTextures;
 	TextBox textBox;

@@ -9,12 +9,11 @@
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 #include "cinder/ImageIo.h"
-#include <algorithm>
 
 #include "Randomizer.hpp"
 #include "BoardHandler.hpp"
 #include "BlackLineSearch.hpp"
-#include "MouseClickHandler.hpp"
+#include "InteractionHandler.hpp"
 #include "GameHandler.hpp"
 
 #include "CinderOpenCv.h"
@@ -31,22 +30,23 @@ public:
 	void mouseUp(MouseEvent event) override;
 
 	GameHandlerRef gameHandler;
+	InteractionHandlerRef interactionHandler;
 
 	// Texture for the ground and the square meshes
 	gl::TextureRef mTexture;
-	cv::Mat inputGameStart;
 	bool restart;	
 };
 
 void BingoGameApp::setup()
 {
+	interactionHandler = std::make_shared<InteractionHandler>();
 
 	// Load Board image and create a matrix
 	ci::Surface8u surface(loadImage(loadAsset("BoardGround.jpg")));
 	cv::Mat input(toOcv(surface));
-	inputGameStart = input;
+	gameHandler = std::make_shared<GameHandler>(input);
 	// randomizes the strings and draws square meshes over the board
-	gameHandler->startNewGame(inputGameStart);
+	gameHandler->startNewGame();
 
 	// Create a texture from all stuff and set the windows to the actual board size
 	mTexture = gl::Texture2d::create(fromOcv(input));
@@ -54,15 +54,7 @@ void BingoGameApp::setup()
 }
 
 void BingoGameApp::mouseUp(MouseEvent event) {
-
-	if (event.isLeft()) {
-		if (restart == true) {
-			gameHandler->startNewGame(inputGameStart);
-			restart = false;
-		}
-		else {
-		}
-	}
+	interactionHandler->handle(event, gameHandler);
 }
 
 void BingoGameApp::draw()
@@ -70,8 +62,7 @@ void BingoGameApp::draw()
 	// Draw texture of the board and the square meshes
 	gl::clear();
 	gl::draw(mTexture);
-
-	bH->draw();
+	gameHandler->drawBoard();
 }
 
 // Set the window so it is not resizable
