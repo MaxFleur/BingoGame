@@ -127,8 +127,6 @@ public:
 		}
 	}
 
-	gl::TextureRef getWinTexture() { return winningTexture; }
-
 	// Winning sound
 	audio::VoiceRef getVoice() { return mVoice; }
 
