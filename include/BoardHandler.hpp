@@ -122,13 +122,10 @@ public:
 
 	}
 
-	bool getRestart() { return restart; }
 	gl::TextureRef getWinTexture() { return winningTexture; }
 
 	// Winning sound
 	audio::VoiceRef getVoice() { return mVoice; }
-
-	void setRestart(bool newRestart) { restart = newRestart; }
 
 	std::vector<std::vector<ci::gl::TextureRef>> fieldTextures;
 	TextBox textBox;
@@ -137,7 +134,6 @@ public:
 
 private:
 
-	bool restart;
 	gl::TextureRef winningTexture;
 	gl::TextureRef restartTexture;
 	gl::TextureRef headerTexture;

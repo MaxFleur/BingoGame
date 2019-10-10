@@ -25,11 +25,14 @@ class BingoGameApp : public App, public BoardHandler {
 public:
 	void setup() override;
 	void draw() override;
+	bool getRestart();
+	void setRestart(bool val);
 
 	void mouseUp(MouseEvent event) override;
 
 	// Texture for the ground and the square meshes
 	gl::TextureRef mTexture;
+	bool restart;
 
 	RandomizerRef r;
 	BoardHandlerRef bH;
@@ -59,9 +62,9 @@ void BingoGameApp::setup()
 void BingoGameApp::mouseUp(MouseEvent event) {
 
 	if (event.isLeft()) {
-		if (bH->getRestart() == true) {
+		if (getRestart() == true) {
 			setup();
-			bH->setRestart(false);
+			setRestart(false);
 		}
 		else {
 			float x = event.getX();
@@ -88,7 +91,7 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 				
 				if (bLS->searchForBlackLine(bH->isBlack)) {
 					bH->getVoice()->start();
-					bH->setRestart(true);
+					setRestart(true);
 				}
 			}
 			if (x > 375 && x < 525 && y > 925 && y < 965) {
@@ -97,6 +100,9 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 		}
 	}
 }
+
+bool BingoGameApp::getRestart() { return restart; }
+void BingoGameApp::setRestart(bool val) { restart = val; }
 
 void BingoGameApp::draw()
 {
@@ -111,6 +117,7 @@ void BingoGameApp::draw()
 		gl::draw(bH->getWinTexture(), vec2(200, 130));
 	}
 }
+
 
 // Set the window so it is not resizable
 CINDER_APP(BingoGameApp, RendererGl, [&](App::Settings *settings) {
