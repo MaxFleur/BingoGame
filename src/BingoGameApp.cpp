@@ -12,7 +12,7 @@
 #include <algorithm>
 
 #include "Randomizer.hpp"
-#include "BoardSetup.hpp"
+#include "BoardHandler.hpp"
 #include "BlackLineSearch.hpp"
 
 #include "CinderOpenCv.h"
@@ -21,7 +21,7 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-class BingoGameApp : public App, public BoardSetup {
+class BingoGameApp : public App, public BoardHandler {
 public:
 	void setup() override;
 	void draw() override;
@@ -32,14 +32,14 @@ public:
 	gl::TextureRef mTexture;
 
 	RandomizerRef r;
-	BoardCreatorRef bS;
+	BoardHandlerRef bH;
 	BLSRef bLS;
 };
 
 void BingoGameApp::setup()
 {
 	r		= std::make_shared<Randomizer>();
-	bS		= std::make_shared<BoardSetup>();
+	bH		= std::make_shared<BoardHandler>();
 	bLS		= std::make_shared<BlackLineSearch>();
 
 	// Load Board image and create a matrix
@@ -48,8 +48,8 @@ void BingoGameApp::setup()
 
 	// randomizes the strings and draws square meshes over the board
 	r->randomize();
-	bS->setup();
-	bS->createBoard(input, r->getEntrys());
+	bH->setup();
+	bH->createBoard(input, r->getEntrys());
 
 	// Create a texture from all stuff and set the windows to the actual board size
 	mTexture = gl::Texture2d::create(fromOcv(input));
@@ -59,9 +59,9 @@ void BingoGameApp::setup()
 void BingoGameApp::mouseUp(MouseEvent event) {
 
 	if (event.isLeft()) {
-		if (bS->getRestart() == true) {
+		if (bH->getRestart() == true) {
 			setup();
-			bS->setRestart(false);
+			bH->setRestart(false);
 		}
 		else {
 			float x = event.getX();
@@ -76,19 +76,19 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 
 				int cloneIndex = (boxRow * 5) + boxCol;
 
-				bS->getBlackFields().at(boxRow).at(boxCol) = true;
+				bH->isBlack.at(boxRow).at(boxCol) = true;
 
-				bS->getTextBox().setText(r->getEntrys().at(cloneIndex));
-				bS->getTextBox().setColor(Color(0.96f, 0.96f, 0.96f));
-				bS->getTextBox().setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
+				bH->textBox.setText(r->getEntrys().at(cloneIndex));
+				bH->textBox.setColor(Color(0.96f, 0.96f, 0.96f));
+				bH->textBox.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
 
-				gl::TextureRef Texture = gl::Texture2d::create(bS->getTextBox().render());
-				bS->getFieldTextures().at(boxRow).at(boxCol) = Texture;
-				gl::draw(bS->getFieldTextures()[boxRow][boxCol]);
+				gl::TextureRef Texture = gl::Texture2d::create(bH->textBox.render());
+				bH->fieldTextures.at(boxRow).at(boxCol) = Texture;
+				gl::draw(bH->fieldTextures[boxRow][boxCol]);
 				
-				if (bLS->searchForBlackLine(bS->getBlackFields())) {
-					bS->getVoice()->start();
-					bS->setRestart(true);
+				if (bLS->searchForBlackLine(bH->isBlack)) {
+					bH->getVoice()->start();
+					bH->setRestart(true);
 				}
 			}
 			if (x > 375 && x < 525 && y > 925 && y < 965) {
@@ -103,22 +103,12 @@ void BingoGameApp::draw()
 	// Draw texture of the board and the square meshes
 	gl::clear();
 	gl::draw(mTexture);
+
+	bH->draw();
+
 	// Draw textBoxes, iterating over the board. Height and width are set to 51 to create a more stylish look
-	int height = 101;
-	for (int x = 0; x <= 4; x++) {
-		int width = 51;
-		for (int y = 0; y <= 4; y++) {
-			gl::draw(bS->getFieldTextures()[x][y], vec2(width, height));
-			width += 160;
-		}
-		height += 160;
-	}
-
-	gl::draw(bS->getRestartTexture(), vec2(375, 925));
-	gl::draw(bS->getHeaderTexture(), vec2(100, 20));
-
-	if (bLS->searchForBlackLine(bS->getBlackFields())) {
-		gl::draw(bS->getWinTexture(), vec2(200, 130));
+	if (bLS->searchForBlackLine(bH->isBlack)) {
+		gl::draw(bH->getWinTexture(), vec2(200, 130));
 	}
 }
 

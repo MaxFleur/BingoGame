@@ -13,10 +13,10 @@
 
 using namespace ci;
 
-class BoardSetup {
+class BoardHandler {
 public:
-	BoardSetup() {};
-	~BoardSetup() {};
+	BoardHandler() {};
+	~BoardHandler() {};
 
 	void setup() {
 		// Set header text, color and background
@@ -106,25 +106,36 @@ public:
 		cv::rectangle(input, h, cv::Scalar(80, 80, 80), 3, cv::LINE_8, 0);
 	}
 
-	std::vector<std::vector<ci::gl::TextureRef>> getFieldTextures() { return fieldTextures; }
-	TextBox getTextBox() { return textBox; }
-	std::vector<std::vector<bool>> getBlackFields() { return isBlack; }
+	void draw() {
+		int height = 101;
+		for (int x = 0; x <= 4; x++) {
+			int width = 51;
+			for (int y = 0; y <= 4; y++) {
+				gl::draw(fieldTextures[x][y], vec2(width, height));
+				width += 160;
+			}
+			height += 160;
+		}
+
+		gl::draw(restartTexture, vec2(375, 925));
+		gl::draw(headerTexture, vec2(100, 20));
+
+	}
 
 	bool getRestart() { return restart; }
 	gl::TextureRef getWinTexture() { return winningTexture; }
-	gl::TextureRef getRestartTexture() { return restartTexture; }
-	gl::TextureRef getHeaderTexture() { return headerTexture; }
+
 	// Winning sound
 	audio::VoiceRef getVoice() { return mVoice; }
 
 	void setRestart(bool newRestart) { restart = newRestart; }
 
-private:
-
 	std::vector<std::vector<ci::gl::TextureRef>> fieldTextures;
 	TextBox textBox;
 	// Stores fields clicked on
 	std::vector<std::vector<bool>> isBlack;
+
+private:
 
 	bool restart;
 	gl::TextureRef winningTexture;
@@ -132,4 +143,4 @@ private:
 	gl::TextureRef headerTexture;
 	audio::VoiceRef mVoice;
 };
-using BoardCreatorRef = std::shared_ptr<BoardSetup>;
+using BoardHandlerRef = std::shared_ptr<BoardHandler>;
