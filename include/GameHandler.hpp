@@ -2,7 +2,6 @@
 #include "Randomizer.hpp"
 #include "BlackLineSearch.hpp"
 #include "BoardHandler.hpp"
-#include "CinderOpenCV.h"
 
 class GameHandler {
 public: 

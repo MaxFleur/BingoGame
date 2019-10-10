@@ -6,7 +6,6 @@
 
 
 #pragma once
-#include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 #include "CinderOpenCv.h"
 #include "cinder/audio/audio.h"
@@ -134,7 +133,6 @@ public:
 	std::vector<std::vector<bool>> isBlack;
 
 private:
-
 	gl::TextureRef winningTexture;
 	gl::TextureRef restartTexture;
 	gl::TextureRef headerTexture;

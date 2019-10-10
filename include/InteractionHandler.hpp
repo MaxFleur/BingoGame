@@ -7,13 +7,9 @@
 
 #pragma once
 #include "cinder/app/App.h"
-#include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 
 #include "GameHandler.hpp"
-#include "BlackLineSearch.hpp"
-#include "BoardHandler.hpp"
-#include "Randomizer.hpp"
 
 class InteractionHandler : public BlackLineSearch {
 public:
