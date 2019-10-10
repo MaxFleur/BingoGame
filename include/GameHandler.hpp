@@ -14,10 +14,6 @@ public:
 		bH->createBoard(m_input, r->getEntrys());
 	}
 
-	void drawBoard() {
-		bH->draw();
-	}
-
 	BoardHandlerRef getBoardHandler() { return bH; }
 	RandomizerRef getRandomizer() { return r; }
 

@@ -61,7 +61,7 @@ void BingoGameApp::draw()
 	// Draw texture of the board and the square meshes
 	gl::clear();
 	gl::draw(mTexture);
-	gameHandler->drawBoard();
+	gameHandler->getBoardHandler()->draw();
 }
 
 // Set the window so it is not resizable
