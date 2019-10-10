@@ -113,11 +113,6 @@ void BingoGameApp::draw()
 	gl::draw(mTexture);
 
 	bH->draw();
-
-	// Draw textBoxes, iterating over the board. Height and width are set to 51 to create a more stylish look
-	if (bLS->searchForBlackLine(bH->isBlack)) {
-		gl::draw(bH->getWinTexture(), vec2(200, 130));
-	}
 }
 
 // Set the window so it is not resizable

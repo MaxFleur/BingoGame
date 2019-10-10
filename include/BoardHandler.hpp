@@ -10,10 +10,11 @@
 #include "cinder/gl/gl.h"
 #include "CinderOpenCv.h"
 #include "cinder/audio/audio.h"
+#include "BlackLineSearch.hpp"
 
 using namespace ci;
 
-class BoardHandler {
+class BoardHandler : public BlackLineSearch {
 public:
 	BoardHandler() {};
 	~BoardHandler() {};
@@ -120,6 +121,10 @@ public:
 		gl::draw(restartTexture, vec2(375, 925));
 		gl::draw(headerTexture, vec2(100, 20));
 
+		// Draw textBoxes, iterating over the board. Height and width are set to 51 to create a more stylish look
+		if (BlackLineSearch::searchForBlackLine(isBlack)) {
+			gl::draw(winningTexture, vec2(200, 130));
+		}
 	}
 
 	gl::TextureRef getWinTexture() { return winningTexture; }

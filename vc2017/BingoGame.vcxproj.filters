@@ -43,7 +43,10 @@
     <ClInclude Include="..\include\Randomizer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\BoardCreator.hpp">
+    <ClInclude Include="..\include\BlackLineSearch.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BoardHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
