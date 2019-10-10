@@ -25,13 +25,14 @@ class BingoGameApp : public App, public BoardHandler {
 public:
 	void setup() override;
 	void draw() override;
-	bool getRestart();
-	void setRestart(bool val);
+
+	void startNewGame(cv::Mat input);
 
 	void mouseUp(MouseEvent event) override;
 
 	// Texture for the ground and the square meshes
 	gl::TextureRef mTexture;
+	cv::Mat inputGameStart;
 	bool restart;
 
 	RandomizerRef r;
@@ -48,11 +49,9 @@ void BingoGameApp::setup()
 	// Load Board image and create a matrix
 	ci::Surface8u surface(loadImage(loadAsset("BoardGround.jpg")));
 	cv::Mat input(toOcv(surface));
-
+	inputGameStart = input;
 	// randomizes the strings and draws square meshes over the board
-	r->randomize();
-	bH->setup();
-	bH->createBoard(input, r->getEntrys());
+	startNewGame(inputGameStart);
 
 	// Create a texture from all stuff and set the windows to the actual board size
 	mTexture = gl::Texture2d::create(fromOcv(input));
@@ -62,9 +61,9 @@ void BingoGameApp::setup()
 void BingoGameApp::mouseUp(MouseEvent event) {
 
 	if (event.isLeft()) {
-		if (getRestart() == true) {
-			setup();
-			setRestart(false);
+		if (restart == true) {
+			startNewGame(inputGameStart);
+			restart = false;
 		}
 		else {
 			float x = event.getX();
@@ -91,7 +90,7 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 				
 				if (bLS->searchForBlackLine(bH->isBlack)) {
 					bH->getVoice()->start();
-					setRestart(true);
+					restart = true;
 				}
 			}
 			if (x > 375 && x < 525 && y > 925 && y < 965) {
@@ -101,8 +100,11 @@ void BingoGameApp::mouseUp(MouseEvent event) {
 	}
 }
 
-bool BingoGameApp::getRestart() { return restart; }
-void BingoGameApp::setRestart(bool val) { restart = val; }
+void BingoGameApp::startNewGame(cv::Mat input) {
+	r->randomize();
+	bH->setup();
+	bH->createBoard(input, r->getEntrys());
+}
 
 void BingoGameApp::draw()
 {
@@ -117,7 +119,6 @@ void BingoGameApp::draw()
 		gl::draw(bH->getWinTexture(), vec2(200, 130));
 	}
 }
-
 
 // Set the window so it is not resizable
 CINDER_APP(BingoGameApp, RendererGl, [&](App::Settings *settings) {
