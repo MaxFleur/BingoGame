@@ -116,21 +116,24 @@ public:
 			}
 			height += 160;
 		}
-
+		if (drawWin == true) {
+			gl::draw(winningTexture, vec2(200, 130));
+		}
 		gl::draw(restartTexture, vec2(375, 925));
 		gl::draw(headerTexture, vec2(100, 20));
-
-		// Draw textBoxes, iterating over the board. Height and width are set to 51 to create a more stylish look
-		if (BlackLineSearch::searchForBlackLine(isBlack)) {
-			gl::draw(winningTexture, vec2(200, 130));
-			mVoice->start();
-		}
 	}
+
+	gl::TextureRef getWinTexture() { return winningTexture; }
+	audio::VoiceRef getVoice() { return mVoice; }
+
+	//gl::draw(gameHandler->getBoardHandler()->getWinTexture(), vec2(200, 130));
 
 	std::vector<std::vector<ci::gl::TextureRef>> fieldTextures;
 	TextBox textBox;
 	// Stores fields clicked on
 	std::vector<std::vector<bool>> isBlack;
+
+	bool drawWin;
 
 private:
 	gl::TextureRef winningTexture;

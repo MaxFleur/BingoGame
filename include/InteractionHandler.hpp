@@ -21,6 +21,7 @@ public:
 		if (restart == true) {
 			restart = false;
 			gameHandler->startNewGame();
+			gameHandler->getBoardHandler()->drawWin = false;
 			return;
 		}
 		else if (event.getX() > 375 && event.getX() < 525 && event.getY() > 925 && event.getY() < 965) {
@@ -50,7 +51,10 @@ public:
 				gameHandler->getBoardHandler()->fieldTextures.at(boxRow).at(boxCol) = Texture;
 				gl::draw(gameHandler->getBoardHandler()->fieldTextures[boxRow][boxCol]);
 			}
+
 			if (BlackLineSearch::searchForBlackLine(gameHandler->getBoardHandler()->isBlack)) {
+				gameHandler->getBoardHandler()->drawWin = true;
+				gameHandler->getBoardHandler()->getVoice()->start();
 				restart = true;
 			}
 		}
