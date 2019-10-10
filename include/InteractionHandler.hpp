@@ -1,5 +1,5 @@
 
-// Creates the bingo board (textures, game text)
+// Handles the interaction of mouse clicks on the board
 //
 // Code provided by MaxFleur
 // https://github.com/MaxFleur

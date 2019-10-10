@@ -1,3 +1,10 @@
+
+// Creates new game instances when called
+//
+// Code provided by MaxFleur
+// https://github.com/MaxFleur
+
+
 #pragma once
 #include "Randomizer.hpp"
 #include "BlackLineSearch.hpp"
