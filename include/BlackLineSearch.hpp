@@ -47,6 +47,7 @@ public:
 		if (width != height) {
 			return false;
 		}
+		hasBlackLine = true;
 		for (int x = 0; x < width; x++) {
 			hasBlackLine &= isBlack[x][x];
 		}
