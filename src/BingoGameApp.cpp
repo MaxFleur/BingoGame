@@ -9,9 +9,6 @@
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 
-#include "Randomizer.hpp"
-#include "BoardHandler.hpp"
-#include "BlackLineSearch.hpp"
 #include "InteractionHandler.hpp"
 #include "GameHandler.hpp"
 
@@ -21,7 +18,7 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-class BingoGameApp : public App, public BoardHandler {
+class BingoGameApp : public App {
 public:
 	void setup() override;
 	void draw() override;
