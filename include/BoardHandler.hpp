@@ -18,6 +18,7 @@ public:
 	BoardHandler() {};
 	~BoardHandler() {};
 
+	// Setup all textures and textBox needed for board initialization
 	void setupBoard() {
 		// Set header text, color and background
 		std::string header = "DAS EPISCHSTE BULLSHIT-BINGO DER WELT!";
@@ -44,8 +45,9 @@ public:
 		mVoice->setVolume(8);
 	}
 
+	// Creates board
 	void createBoard(cv::Mat input, std::vector<std::string> entrys) {
-		// Clear and reserve
+		// Clear and reserve textures
 		fieldTextures.clear();
 		fieldTextures.reserve(25);
 		isBlack.clear();
@@ -71,7 +73,7 @@ public:
 				else {
 					textSize = 32;
 				}
-
+				// Set font and text based on randomization
 				textBox.setFont(Font("Helvetica", textSize));
 				textBox.setText(entrys.at(entryIndex));
 				// Black background and white text for centered field
@@ -106,6 +108,7 @@ public:
 		cv::rectangle(input, h, cv::Scalar(80, 80, 80), 3, cv::LINE_8, 0);
 	}
 
+	// Draw board, using fieldTextures and a 2D-vector
 	void draw() {
 		int height = 101;
 		for (int x = 0; x <= 4; x++) {
@@ -116,6 +119,7 @@ public:
 			}
 			height += 160;
 		}
+		// Only draw winning texture if condition is true
 		if (drawWin == true) {
 			gl::draw(winningTexture, vec2(200, 130));
 		}
@@ -134,9 +138,13 @@ public:
 	bool drawWin;
 
 private:
+	// Texture displayed when game is won
 	gl::TextureRef winningTexture;
+	// Texture displayed for game restart
 	gl::TextureRef restartTexture;
+	// Header
 	gl::TextureRef headerTexture;
+	// Audio file, is played when game is won
 	audio::VoiceRef mVoice;
 };
 using BoardHandlerRef = std::shared_ptr<BoardHandler>;

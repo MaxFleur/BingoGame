@@ -10,11 +10,13 @@
 #include "BlackLineSearch.hpp"
 #include "BoardHandler.hpp"
 
+// Instances new game at application start or if game is restartet
 class GameHandler {
 public: 
 	GameHandler(cv::Mat input) : m_input(input) {};
 	~GameHandler() {};
 
+	// Randomize strings, then create the board
 	void startNewGame() {
 		r->randomize();
 		bH->setupBoard();

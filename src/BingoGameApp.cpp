@@ -18,6 +18,7 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
+// Bingo Game, this class only stars the applicatipn
 class BingoGameApp : public App {
 public:
 	void setup() override;
@@ -49,6 +50,7 @@ void BingoGameApp::setup()
 	setWindowSize(surface.getWidth(), surface.getHeight());
 }
 
+// Let the InteractionHandler do the handling stuff
 void BingoGameApp::mouseUp(MouseEvent event) {
 	interactionHandler->handle(event, gameHandler);
 }

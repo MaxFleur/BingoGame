@@ -43,7 +43,7 @@ private:
 
 	// Entrys used for board
 	std::vector<std::string> entrys;
-	// Source vector, contains several strings
+	// Source vector, contains several strings, just test values for this case
 	std::vector<std::string> source = {
 		"A",
 		"B",
