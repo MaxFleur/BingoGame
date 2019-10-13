@@ -17,7 +17,7 @@ public:
 
 	void startNewGame() {
 		r->randomize();
-		bH->setup();
+		bH->setupBoard();
 		bH->createBoard(m_input, r->getEntrys());
 	}
 

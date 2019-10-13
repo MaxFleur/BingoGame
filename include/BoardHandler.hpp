@@ -18,7 +18,7 @@ public:
 	BoardHandler() {};
 	~BoardHandler() {};
 
-	void setup() {
+	void setupBoard() {
 		// Set header text, color and background
 		std::string header = "DAS EPISCHSTE BULLSHIT-BINGO DER WELT!";
 		TextBox tBoxSetup = TextBox().alignment(TextBox::CENTER).font(Font("Helvetica", 40)).size(ivec2(700, 40)).text(header);
@@ -125,8 +125,6 @@ public:
 
 	gl::TextureRef getWinTexture() { return winningTexture; }
 	audio::VoiceRef getVoice() { return mVoice; }
-
-	//gl::draw(gameHandler->getBoardHandler()->getWinTexture(), vec2(200, 130));
 
 	std::vector<std::vector<ci::gl::TextureRef>> fieldTextures;
 	TextBox textBox;
