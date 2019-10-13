@@ -44,6 +44,12 @@ public:
 				gameHandler->getBoardHandler()->isBlack.at(boxRow).at(boxCol) = true;
 
 				gameHandler->getBoardHandler()->textBox.setText(gameHandler->getRandomizer()->getEntrys().at(cloneIndex));
+				if (gameHandler->getRandomizer()->getEntrys().at(cloneIndex).length() > 30) {
+					gameHandler->getBoardHandler()->textBox.setFont(Font("Helvetica", 27));
+				}
+				else {
+					gameHandler->getBoardHandler()->textBox.setFont(Font("Helvetica", 32));
+				}
 				gameHandler->getBoardHandler()->textBox.setColor(Color(0.96f, 0.96f, 0.96f));
 				gameHandler->getBoardHandler()->textBox.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
 
