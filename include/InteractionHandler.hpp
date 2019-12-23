@@ -44,9 +44,21 @@ public:
 				int boxCol = (x - 51) / 160;
 
 				int cloneIndex = (boxRow * 5) + boxCol;
-
-				gameHandler->getBoardHandler()->isBlack.at(boxRow).at(boxCol) = true;
-
+				// Check if the box has been clicked on already
+				// Black board and white text if yes
+				if (gameHandler->getBoardHandler()->isBlack.at(boxRow).at(boxCol) == false) {
+					checked = true;
+					textBoxColor = Color(0.96f, 0.96f, 0.96f);
+					backgroundColor = Color(0.03f, 0.03f, 0.03f);
+				}
+				// Otherwise reset
+				else {
+					checked = false;
+					textBoxColor = Color(0.03f, 0.03f, 0.03f);
+					backgroundColor = Color(0.96f, 0.96f, 0.96f);
+				}
+				// Check or uncheck the box
+				gameHandler->getBoardHandler()->isBlack.at(boxRow).at(boxCol) = checked;
 				// Set text size depending on length of the string
 				gameHandler->getBoardHandler()->textBox.setText(gameHandler->getRandomizer()->getEntrys().at(cloneIndex));
 				if (gameHandler->getRandomizer()->getEntrys().at(cloneIndex).length() > 30) {
@@ -55,9 +67,9 @@ public:
 				else {
 					gameHandler->getBoardHandler()->textBox.setFont(Font("Helvetica", 32));
 				}
-				// Set black box and white text
-				gameHandler->getBoardHandler()->textBox.setColor(Color(0.96f, 0.96f, 0.96f));
-				gameHandler->getBoardHandler()->textBox.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
+				// Set textbox and background color
+				gameHandler->getBoardHandler()->textBox.setColor(textBoxColor);
+				gameHandler->getBoardHandler()->textBox.setBackgroundColor(backgroundColor);
 
 				// Render and draw modified texture
 				gl::TextureRef Texture = gl::Texture2d::create(gameHandler->getBoardHandler()->textBox.render());
@@ -74,5 +86,9 @@ public:
 		}
 	}
 	bool restart = false;
+	bool checked = false;
+
+	Color textBoxColor;
+	Color backgroundColor;
 };
 using InteractionHandlerRef = std::shared_ptr<InteractionHandler>;
