@@ -44,6 +44,7 @@ void BingoGameApp::setup()
 	gameHandler = std::make_shared<GameHandler>(input);
 	// randomizes the strings and draws square meshes over the board
 	gameHandler->startNewGame();
+	gameHandler->getSoundHandler()->handleSoundFilePath();
 
 	// Create a texture from all stuff and set the windows to the actual board size
 	mTexture = gl::Texture2d::create(fromOcv(input));

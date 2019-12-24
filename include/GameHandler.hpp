@@ -22,7 +22,6 @@ public:
 		r->randomize();
 		bH->setupBoard();
 		bH->createBoard(m_input, r->getEntrys());
-		sH->handleSoundFilePath();
 	}
 
 	BoardHandlerRef getBoardHandler() { return bH; }

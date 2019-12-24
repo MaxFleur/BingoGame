@@ -86,6 +86,7 @@ public:
 		}
 	}
 
+private:
 	bool restart = false;
 	bool checked = false;
 
