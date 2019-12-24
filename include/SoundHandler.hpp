@@ -23,15 +23,16 @@ public:
 		exePath = exePath.substr(0, exePath.size() - substractStr.size());
 
 		exePath.append("assets\\winningSound.wav");
-		std::wstring w_exePath = std::wstring(exePath.begin(), exePath.end());
-		m_soundFilePath = w_exePath.c_str();
+		m_exePath = exePath;;
 	}
 
 	void playSound() {
-		PlaySound(m_soundFilePath, NULL, SND_ASYNC);
+		std::wstring w_exePath = std::wstring(m_exePath.begin(), m_exePath.end());
+		PlaySound(w_exePath.c_str(), NULL, SND_ASYNC);
 	}
 
 private:
 	const wchar_t* m_soundFilePath;
+	std::string m_exePath;
 };
 using SoundHandlerRef = std::shared_ptr<SoundHandler>;

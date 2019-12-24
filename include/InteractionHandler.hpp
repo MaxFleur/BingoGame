@@ -8,11 +8,6 @@
 #pragma once
 #include "cinder/app/App.h"
 #include "cinder/gl/gl.h"
-#include <Windows.h>
-#include <mmsystem.h>
-
-#include <iostream>
-#include <string.h>
 
 #include "GameHandler.hpp"
 
@@ -85,26 +80,12 @@ public:
 			// the BoardHandler will play the audio file and draw the winning texture
 			if (BlackLineSearch::searchForBlackLine(gameHandler->getBoardHandler()->isBlack)) {
 				gameHandler->getBoardHandler()->drawWin = true;
-
-				wchar_t buffer[MAX_PATH];
-				GetModuleFileName(NULL, buffer, MAX_PATH);
-
-				std::wstring ws(buffer);
-				std::string test(ws.begin(), ws.end());
-
-				const std::string ext("BingoGame.exe");
-				test = test.substr(0, test.size() - ext.size());
-
-				test.append("assets\\winningSound.wav");
-				std::wstring widestr = std::wstring(test.begin(), test.end());
-				const wchar_t* widecstr = widestr.c_str();
-
-				PlaySound(widecstr, NULL, SND_ASYNC);
-				//gameHandler->getBoardHandler()->getVoice()->start();
+				gameHandler->getSoundHandler()->playSound();
 				restart = true;
 			}
 		}
 	}
+
 	bool restart = false;
 	bool checked = false;
 
