@@ -6,6 +6,7 @@
 
 
 #pragma once
+
 #include "cinder/gl/gl.h"
 #include "CinderOpenCv.h"
 #include "cinder/audio/audio.h"
@@ -39,10 +40,6 @@ public:
 		tBoxSetup.setColor(Color(0.03f, 0.03f, 0.03f));
 		tBoxSetup.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
 		restartTexture = gl::Texture2d::create(tBoxSetup.render());
-		// Handle audio file
-		ci::audio::SourceFileRef sourceFile = audio::load(app::loadAsset("win.mp3"));
-		mVoice = audio::Voice::create(sourceFile);
-		mVoice->setVolume(8);
 	}
 
 	// Creates board
@@ -128,7 +125,6 @@ public:
 	}
 
 	gl::TextureRef getWinTexture() { return winningTexture; }
-	audio::VoiceRef getVoice() { return mVoice; }
 
 	std::vector<std::vector<ci::gl::TextureRef>> fieldTextures;
 	TextBox textBox;
@@ -144,7 +140,5 @@ private:
 	gl::TextureRef restartTexture;
 	// Header
 	gl::TextureRef headerTexture;
-	// Audio file, is played when game is won
-	audio::VoiceRef mVoice;
 };
 using BoardHandlerRef = std::shared_ptr<BoardHandler>;
