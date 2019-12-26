@@ -82,13 +82,13 @@ public:
 
 				// Black background and white text for centered field
 				if (x == 2 && y == 2) {
-					textBox.setColor(Color(0.96f, 0.96f, 0.96f));
-					textBox.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
+					textBox.setColor(black);
+					textBox.setBackgroundColor(white);
 				}
 				// White background and black text for all other fields
 				else {
-					textBox.setColor(Color(0.0f, 0.0f, 0.0f));
-					textBox.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
+					textBox.setColor(white);
+					textBox.setBackgroundColor(black);
 				}
 				// Create a texture for every testbox and store it for later drawing
 				gl::TextureRef Texture = gl::Texture2d::create(textBox.render());
@@ -139,6 +139,9 @@ public:
 	TextBox textBox;
 	std::vector<storeTL> tLs;
 	bool drawWin;
+
+	Color white = Color(0.03f, 0.03f, 0.03f);
+	Color black = Color(0.96f, 0.96f, 0.96f);
 
 private:
 	// Texture displayed when game is won

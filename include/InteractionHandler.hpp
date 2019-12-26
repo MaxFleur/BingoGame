@@ -48,14 +48,14 @@ public:
 				// Black board and white text if yes
 				if (gameHandler->getBlackLineSearch()->isBlack.at(boxRow).at(boxCol) == false) {
 					checked = true;
-					textBoxColor = Color(0.96f, 0.96f, 0.96f);
-					backgroundColor = Color(0.03f, 0.03f, 0.03f);
+					textBoxColor = gameHandler->getBoardHandler()->black;
+					backgroundColor = gameHandler->getBoardHandler()->white;
 				}
 				// Otherwise reset
 				else {
 					checked = false;
-					textBoxColor = Color(0.03f, 0.03f, 0.03f);
-					backgroundColor = Color(0.96f, 0.96f, 0.96f);
+					textBoxColor = gameHandler->getBoardHandler()->white;
+					backgroundColor = gameHandler->getBoardHandler()->black;
 				}
 				// Check or uncheck the box
 				gameHandler->getBlackLineSearch()->isBlack.at(boxRow).at(boxCol) = checked;
