@@ -60,13 +60,13 @@ public:
 				// Check or uncheck the box
 				gameHandler->getBlackLineSearch()->isBlack.at(boxRow).at(boxCol) = checked;
 				// Set text size depending on length of the string
-				gameHandler->getBoardHandler()->textBox.setText(gameHandler->getRandomizer()->getEntrys().at(cloneIndex));
-				if (gameHandler->getRandomizer()->getEntrys().at(cloneIndex).length() > 30) {
-					gameHandler->getBoardHandler()->textBox.setFont(Font("Helvetica", 27));
-				}
-				else {
-					gameHandler->getBoardHandler()->textBox.setFont(Font("Helvetica", 32));
-				}
+				gameHandler->getBoardHandler()->textBox.setText(gameHandler->getBoardHandler()->tLs.at(cloneIndex).text);
+				gameHandler->getBoardHandler()->textBox.setFont(
+					Font(
+						"Helvetica", 
+						gameHandler->getBoardHandler()->tLs.at(cloneIndex).length)
+					);
+
 				// Set textbox and background color
 				gameHandler->getBoardHandler()->textBox.setColor(textBoxColor);
 				gameHandler->getBoardHandler()->textBox.setBackgroundColor(backgroundColor);

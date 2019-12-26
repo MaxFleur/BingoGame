@@ -20,6 +20,7 @@ public:
 	// Randomize strings, then create the board
 	void startNewGame() {
 		r->randomize();
+		bH->clearStoredTL();
 		bH->setupBoard();
 		bH->createBoard(m_input, r->getEntrys());
 		bLS->resetIsBlack();

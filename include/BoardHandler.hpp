@@ -18,6 +18,11 @@ public:
 	BoardHandler() {};
 	~BoardHandler() {};
 
+	struct storeTL {
+		std::string text;
+		int length;
+	};
+
 	// Setup all textures and textBox needed for board initialization
 	void setupBoard() {
 		// Set header text, color and background
@@ -71,6 +76,10 @@ public:
 				// Set font and text based on randomization
 				textBox.setFont(Font("Helvetica", textSize));
 				textBox.setText(entrys.at(entryIndex));
+
+				storeTL m_storeTL{entrys.at(entryIndex), textSize};
+				tLs.push_back(m_storeTL);
+
 				// Black background and white text for centered field
 				if (x == 2 && y == 2) {
 					textBox.setColor(Color(0.96f, 0.96f, 0.96f));
@@ -101,6 +110,10 @@ public:
 		cv::rectangle(input, h, cv::Scalar(80, 80, 80), 3, cv::LINE_8, 0);
 	}
 
+	void clearStoredTL() {
+		tLs.clear();
+	}
+
 	// Draw board, using fieldTextures and a 2D-vector
 	void draw() {
 		int height = 101;
@@ -124,7 +137,7 @@ public:
 
 	std::vector<std::vector<ci::gl::TextureRef>> fieldTextures;
 	TextBox textBox;
-
+	std::vector<storeTL> tLs;
 	bool drawWin;
 
 private:
