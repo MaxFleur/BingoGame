@@ -104,8 +104,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\BlackLineSearch.hpp" />
     <ClInclude Include="..\include\BoardHandler.hpp" />
-    <ClInclude Include="..\include\GameHandler.hpp" />
-    <ClInclude Include="..\include\InteractionHandler.hpp" />
+    <ClInclude Include="..\include\InputHandler.hpp" />
     <ClInclude Include="..\include\Randomizer.hpp" />
     <ClInclude Include="..\include\Resources.h" />
     <ClInclude Include="..\..\..\blocks\OpenCV3\include\CinderOpenCV.h" />

@@ -46,16 +46,13 @@
     <ClInclude Include="..\include\BlackLineSearch.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\GameHandler.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\BoardHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\InteractionHandler.hpp">
+    <ClInclude Include="..\include\SoundHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\SoundHandler.hpp">
+    <ClInclude Include="..\include\InputHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
