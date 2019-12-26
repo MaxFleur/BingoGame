@@ -22,11 +22,13 @@ public:
 		r->randomize();
 		bH->setupBoard();
 		bH->createBoard(m_input, r->getEntrys());
+		bLS->resetIsBlack();
 	}
 
 	BoardHandlerRef getBoardHandler() { return bH; }
 	RandomizerRef getRandomizer() { return r; }
 	SoundHandlerRef getSoundHandler() { return sH; }
+	BLSRef getBlackLineSearch() { return bLS; }
 
 private:
 	RandomizerRef r = std::make_shared<Randomizer>();

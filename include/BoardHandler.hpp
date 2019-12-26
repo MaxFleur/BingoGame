@@ -10,7 +10,6 @@
 #include "cinder/gl/gl.h"
 #include "CinderOpenCv.h"
 #include "cinder/audio/audio.h"
-#include "BlackLineSearch.hpp"
 
 using namespace ci;
 
@@ -59,7 +58,6 @@ public:
 		for (int x = 0; x <= 4; x++) {
 			int width = 50;
 			fieldTextures.push_back(std::vector<ci::gl::TextureRef>());
-			isBlack.push_back(std::vector<bool>());
 
 			for (int y = 0; y <= 4; y++) {
 				int textSize;
@@ -75,13 +73,11 @@ public:
 				textBox.setText(entrys.at(entryIndex));
 				// Black background and white text for centered field
 				if (x == 2 && y == 2) {
-					isBlack[x].push_back(true);
 					textBox.setColor(Color(0.96f, 0.96f, 0.96f));
 					textBox.setBackgroundColor(Color(0.03f, 0.03f, 0.03f));
 				}
 				// White background and black text for all other fields
 				else {
-					isBlack[x].push_back(false);
 					textBox.setColor(Color(0.0f, 0.0f, 0.0f));
 					textBox.setBackgroundColor(Color(0.96f, 0.96f, 0.96f));
 				}
@@ -128,8 +124,6 @@ public:
 
 	std::vector<std::vector<ci::gl::TextureRef>> fieldTextures;
 	TextBox textBox;
-	// Stores fields clicked on
-	std::vector<std::vector<bool>> isBlack;
 
 	bool drawWin;
 

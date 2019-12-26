@@ -46,7 +46,7 @@ public:
 				int cloneIndex = (boxRow * 5) + boxCol;
 				// Check if the box has been clicked on already
 				// Black board and white text if yes
-				if (gameHandler->getBoardHandler()->isBlack.at(boxRow).at(boxCol) == false) {
+				if (gameHandler->getBlackLineSearch()->isBlack.at(boxRow).at(boxCol) == false) {
 					checked = true;
 					textBoxColor = Color(0.96f, 0.96f, 0.96f);
 					backgroundColor = Color(0.03f, 0.03f, 0.03f);
@@ -58,7 +58,7 @@ public:
 					backgroundColor = Color(0.96f, 0.96f, 0.96f);
 				}
 				// Check or uncheck the box
-				gameHandler->getBoardHandler()->isBlack.at(boxRow).at(boxCol) = checked;
+				gameHandler->getBlackLineSearch()->isBlack.at(boxRow).at(boxCol) = checked;
 				// Set text size depending on length of the string
 				gameHandler->getBoardHandler()->textBox.setText(gameHandler->getRandomizer()->getEntrys().at(cloneIndex));
 				if (gameHandler->getRandomizer()->getEntrys().at(cloneIndex).length() > 30) {
@@ -78,7 +78,7 @@ public:
 			}
 			// If a whole vertical, horizontal or diagonal line is black (and thus the game is won), 
 			// the BoardHandler will play the audio file and draw the winning texture
-			if (BlackLineSearch::searchForBlackLine(gameHandler->getBoardHandler()->isBlack)) {
+			if (gameHandler->getBlackLineSearch()->searchForBlackLine()) {
 				gameHandler->getBoardHandler()->drawWin = true;
 				gameHandler->getSoundHandler()->playSound();
 				restart = true;

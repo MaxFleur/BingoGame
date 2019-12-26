@@ -17,7 +17,7 @@ public:
 	BlackLineSearch() {};
 	~BlackLineSearch() {};
 
-	bool searchForBlackLine(const std::vector<std::vector<bool>>& isBlack) {
+	bool searchForBlackLine() {
 		// works for any n x m matrix with n > 0 and m > 0
 		const size_t width = isBlack.size();
 		assert(width > 0);
@@ -60,5 +60,17 @@ public:
 		}
 		return hasBlackLine;
 	}
+
+	void resetIsBlack() {
+		isBlack = {
+			{false, false, false, false, false},
+			{ false, false, false, false, false },
+			{ false, false, true, false, false },
+			{ false, false, false, false, false },
+			{ false, false, false, false, false }
+		};
+	}
+
+	std::vector<std::vector<bool>> isBlack;
 };
 using BLSRef = std::shared_ptr<BlackLineSearch>;
