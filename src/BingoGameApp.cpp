@@ -39,7 +39,7 @@ void BingoGameApp::setup()
 	cv::Mat input(toOcv(surface));
 
 	iH = std::make_shared<InputHandler>(input);
-	// randomizes the strings and draws square meshes over the board
+	// Start a new game and determine the file path of the winning sound
 	iH->startNewGame();
 	iH->getSoundHandler()->handleSoundFilePath();
 

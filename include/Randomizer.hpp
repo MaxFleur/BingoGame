@@ -8,8 +8,8 @@
 #pragma once
 #include <random> 
 #include <vector>
-#include <string>
 
+// Randomizer class, takes a vector with strings to use it for randomization
 class Randomizer {
 public:
 	Randomizer() {};
@@ -40,7 +40,6 @@ public:
 	std::vector<std::string> getEntrys() { return entrys; }
 
 private:
-
 	// Entrys used for board
 	std::vector<std::string> entrys;
 	// Source vector, contains several strings, just test values for this case

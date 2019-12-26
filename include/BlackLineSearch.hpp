@@ -61,7 +61,9 @@ public:
 		return hasBlackLine;
 	}
 
+	// Reset in case of a new game
 	void resetIsBlack() {
+		// True in the middle of the game
 		isBlack = {
 			{false, false, false, false, false},
 			{ false, false, false, false, false },

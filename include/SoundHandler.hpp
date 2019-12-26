@@ -1,9 +1,13 @@
+
+// Handles the sound file used when winning the game, handles a sound file path
+//
+// Code provided by MaxFleur
+// https://github.com/MaxFleur
+
+
 #pragma once
 #include <Windows.h>
 #include <mmsystem.h>
-
-#include <iostream>
-#include <string.h>
 
 // SoundHandler class, handle a variable soundfilePath and play it if needed
 class SoundHandler {

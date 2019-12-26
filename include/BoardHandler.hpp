@@ -6,7 +6,6 @@
 
 
 #pragma once
-
 #include "cinder/gl/gl.h"
 #include "CinderOpenCv.h"
 #include "cinder/audio/audio.h"
@@ -17,7 +16,7 @@ class BoardHandler {
 public:
 	BoardHandler() {};
 	~BoardHandler() {};
-
+	// Store the text entrys and their determining the length
 	struct storeTL {
 		std::string text;
 		int length;
@@ -56,10 +55,10 @@ public:
 		textBox.setAlignment(ci::TextBox::CENTER);
 		textBox.setSize(ci::ivec2(157, 157));
 
-		// Iterates over the board, creating textboxes and square meshes.
 		int height = 100;
 		int entryIndex = 0;
 
+		// Iterates over the board, creating textboxes and square meshes.
 		for (int x = 0; x <= 4; x++) {
 			int width = 50;
 			fieldTextures.push_back(std::vector<ci::gl::TextureRef>());
@@ -110,10 +109,6 @@ public:
 		cv::rectangle(input, h, cv::Scalar(80, 80, 80), 3, cv::LINE_8, 0);
 	}
 
-	void clearStoredTL() {
-		tLs.clear();
-	}
-
 	// Draw board, using fieldTextures and a 2D-vector
 	void draw() {
 		int height = 101;
@@ -134,10 +129,13 @@ public:
 	}
 
 	gl::TextureRef getWinTexture() { return winningTexture; }
-
+	// Textures of the fields
 	std::vector<std::vector<ci::gl::TextureRef>> fieldTextures;
+	// texBox used for the textures
 	TextBox textBox;
+	// Store texts and determining lengths
 	std::vector<storeTL> tLs;
+	// Draw things when game is won
 	bool drawWin;
 
 	Color white = Color(0.03f, 0.03f, 0.03f);
