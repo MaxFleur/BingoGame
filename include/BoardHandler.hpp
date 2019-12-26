@@ -13,7 +13,7 @@
 
 using namespace ci;
 
-class BoardHandler : public BlackLineSearch {
+class BoardHandler {
 public:
 	BoardHandler() {};
 	~BoardHandler() {};
@@ -51,7 +51,7 @@ public:
 		// Clear and reserve textures
 		fieldTextures.clear();
 		fieldTextures.reserve(25);
-		isBlack.clear();
+
 		// Center all text
 		textBox.setAlignment(ci::TextBox::CENTER);
 		textBox.setSize(ci::ivec2(157, 157));
