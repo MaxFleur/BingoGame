@@ -11,8 +11,6 @@
 
 #include "InputHandler.hpp"
 
-#include "CinderOpenCv.h"
-
 using namespace ci;
 using namespace ci::app;
 using namespace std;
@@ -24,7 +22,7 @@ public:
 	void draw() override;
 
 	void mouseUp(MouseEvent event) override;
-
+	// Input handler, this will manage the entire board, field entrys and sound
 	InputHandlerRef iH;
 
 	// Texture for the ground and the square meshes
@@ -34,18 +32,17 @@ public:
 
 void BingoGameApp::setup()
 {
-	// Load Board image and create a matrix
-	ci::Surface8u surface(loadImage(loadAsset("BoardGround.jpg")));
-	cv::Mat input(toOcv(surface));
-
-	iH = std::make_shared<InputHandler>(input);
+	// Load Board image 
+	auto img = loadImage(loadAsset("BoardGround.jpg"));
+	// Generate input handler
+	iH = std::make_shared<InputHandler>();
 	// Start a new game and determine the file path of the winning sound
 	iH->startNewGame();
 	iH->getSoundHandler()->handleSoundFilePath();
 
-	// Create a texture from all stuff and set the windows to the actual board size
-	mTexture = gl::Texture2d::create(fromOcv(input));
-	setWindowSize(surface.getWidth(), surface.getHeight());
+	// Create a texture out of the boardground and set the windows to the actual board size
+	mTexture = gl::Texture2d::create(img);
+	setWindowSize(900, 1000);
 }
 
 // Let the InteractionHandler do the handling stuff

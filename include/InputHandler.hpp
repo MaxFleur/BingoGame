@@ -14,7 +14,7 @@
 // InputHandler class, start a new game and handle a mouse clicks
 class InputHandler {
 public:
-	InputHandler(cv::Mat input) : m_input(input) {};
+	InputHandler() {};
 	~InputHandler() {};
 
 	// Start a new game
@@ -26,7 +26,7 @@ public:
 		bH->tLs.clear();
 		// Setup and generate new board
 		bH->setupBoard();
-		bH->createBoard(m_input, r->getEntrys());
+		bH->createBoard(r->getEntrys());
 		// Reset bools in case of another game instance
 		bLS->resetIsBlack();
 	}
@@ -107,7 +107,6 @@ private:
 	BoardHandlerRef bH = std::make_shared<BoardHandler>();
 	BLSRef bLS = std::make_shared<BlackLineSearch>();
 	SoundHandlerRef sH = std::make_shared<SoundHandler>();
-	cv::Mat m_input;
 	// Restart bool
 	bool restart = false;
 	// Sets bools of isBlack

@@ -7,7 +7,6 @@
 
 #pragma once
 #include "cinder/gl/gl.h"
-#include "CinderOpenCv.h"
 #include "cinder/audio/audio.h"
 
 using namespace ci;
@@ -46,7 +45,7 @@ public:
 	}
 
 	// Creates board
-	void createBoard(cv::Mat input, std::vector<std::string> entrys) {
+	void createBoard(std::vector<std::string> entrys) {
 		// Clear and reserve textures
 		fieldTextures.clear();
 		fieldTextures.reserve(25);
@@ -61,6 +60,7 @@ public:
 		// Iterates over the board, creating textboxes and square meshes.
 		for (int x = 0; x <= 4; x++) {
 			int width = 50;
+
 			fieldTextures.push_back(std::vector<ci::gl::TextureRef>());
 
 			for (int y = 0; y <= 4; y++) {
@@ -76,7 +76,7 @@ public:
 				textBox.setFont(Font("Helvetica", textSize));
 				textBox.setText(entrys.at(entryIndex));
 
-				storeTL m_storeTL{entrys.at(entryIndex), textSize};
+				storeTL m_storeTL{ entrys.at(entryIndex), textSize };
 				tLs.push_back(m_storeTL);
 
 				// Black background and white text for centered field
@@ -93,23 +93,39 @@ public:
 				gl::TextureRef Texture = gl::Texture2d::create(textBox.render());
 				fieldTextures[x].push_back(Texture);
 
-				// Draws the square meshes over the field
-				cv::Rect r = cv::Rect(width, height, 160, 160);
-				cv::rectangle(input, r, cv::Scalar(80, 80, 80), 2, cv::LINE_8, 0);
-
 				width += 160;
 				entryIndex++;
 			}
 			height += 160;
 		}
-		// Rectangles for game restart and headline
-		cv::Rect r = cv::Rect(375, 925, 150, 40);
-		cv::rectangle(input, r, cv::Scalar(80, 80, 80), 3, cv::LINE_8, 0);
-		cv::Rect h = cv::Rect(100, 20, 700, 40);
-		cv::rectangle(input, h, cv::Scalar(80, 80, 80), 3, cv::LINE_8, 0);
+		// Points for the polylines
+		ci::vec2 horizontalLeft = ci::vec2(48, 100);
+		ci::vec2 horizontalRight = ci::vec2(852, 100);
+		ci::vec2 verticalTop = ci::vec2(50, 100);
+		ci::vec2 verticalBottom = ci::vec2(50, 900);
+		// Clear polylines before another generation
+		lines.clear();
+		// Draw six horizontal and six vertical lines
+		for (int i = 0; i <= 5; i++) {
+			// Horizontal line, push back the horizontal points
+			ci::PolyLine2f horizontalLine;
+			horizontalLine.push_back(horizontalLeft);
+			horizontalLine.push_back(horizontalRight);
+			lines.push_back(horizontalLine);
+			// Same for vertical points and line
+			ci::PolyLine2f verticalLine;
+			verticalLine.push_back(verticalTop);
+			verticalLine.push_back(verticalBottom);
+			lines.push_back(verticalLine);
+			// Move the points coordinates for the next two polylines
+			horizontalLeft.y += 160;
+			horizontalRight.y += 160;
+			verticalTop.x += 160;
+			verticalBottom.x += 160;
+		}
 	}
 
-	// Draw board, using fieldTextures and a 2D-vector
+	// Draw board with field textures and polylines
 	void draw() {
 		int height = 101;
 		for (int x = 0; x <= 4; x++) {
@@ -120,12 +136,22 @@ public:
 			}
 			height += 160;
 		}
+		// Draw restart and header texture
+		gl::draw(restartTexture, vec2(375, 925));
+		gl::draw(headerTexture, vec2(100, 20));
+		// Set linewidth and greyvalue
+		gl::lineWidth(4);
+		gl::color(Color(0.31f, 0.31f, 0.31f));
+		// Then draw all polylines and reset color
+		for (int i = 0; i < lines.size(); i++) {
+			gl::draw(lines.at(i));
+		}
+		gl::color(Color::white());
+
 		// Only draw winning texture if condition is true
 		if (drawWin == true) {
 			gl::draw(winningTexture, vec2(200, 130));
 		}
-		gl::draw(restartTexture, vec2(375, 925));
-		gl::draw(headerTexture, vec2(100, 20));
 	}
 
 	gl::TextureRef getWinTexture() { return winningTexture; }
@@ -148,5 +174,6 @@ private:
 	gl::TextureRef restartTexture;
 	// Header
 	gl::TextureRef headerTexture;
+	std::vector<ci::PolyLine2f> lines;
 };
 using BoardHandlerRef = std::shared_ptr<BoardHandler>;
