@@ -93,36 +93,18 @@ public:
 				gl::TextureRef Texture = gl::Texture2d::create(textBox.render());
 				fieldTextures[x].push_back(Texture);
 
+				ci::Rectf rectBox = ci::Rectf(width, height, width + 160, height + 160);
+				rectangles.push_back(rectBox);
+
 				width += 160;
 				entryIndex++;
 			}
 			height += 160;
 		}
-		// Points for the polylines
-		ci::vec2 horizontalLeft = ci::vec2(48, 100);
-		ci::vec2 horizontalRight = ci::vec2(852, 100);
-		ci::vec2 verticalTop = ci::vec2(50, 100);
-		ci::vec2 verticalBottom = ci::vec2(50, 900);
-		// Clear polylines before another generation
-		lines.clear();
-		// Draw six horizontal and six vertical lines
-		for (int i = 0; i <= 5; i++) {
-			// Horizontal line, push back the horizontal points
-			ci::PolyLine2f horizontalLine;
-			horizontalLine.push_back(horizontalLeft);
-			horizontalLine.push_back(horizontalRight);
-			lines.push_back(horizontalLine);
-			// Same for vertical points and line
-			ci::PolyLine2f verticalLine;
-			verticalLine.push_back(verticalTop);
-			verticalLine.push_back(verticalBottom);
-			lines.push_back(verticalLine);
-			// Move the points coordinates for the next two polylines
-			horizontalLeft.y += 160;
-			horizontalRight.y += 160;
-			verticalTop.x += 160;
-			verticalBottom.x += 160;
-		}
+		ci::Rectf headerRect = ci::Rectf(100, 20, 800, 62);
+		rectangles.push_back(headerRect);
+		ci::Rectf restartRect = ci::Rectf(375, 925, 525, 967);
+		rectangles.push_back(restartRect);
 	}
 
 	// Draw board with field textures and polylines
@@ -140,11 +122,11 @@ public:
 		gl::draw(restartTexture, vec2(375, 925));
 		gl::draw(headerTexture, vec2(100, 20));
 		// Set linewidth and greyvalue
-		gl::lineWidth(4);
+		gl::lineWidth(3);
 		gl::color(Color(0.31f, 0.31f, 0.31f));
 		// Then draw all polylines and reset color
-		for (int i = 0; i < lines.size(); i++) {
-			gl::draw(lines.at(i));
+		for (int i = 0; i < rectangles.size(); i++) {
+			gl::drawStrokedRect(rectangles.at(i));
 		}
 		gl::color(Color::white());
 
@@ -174,6 +156,6 @@ private:
 	gl::TextureRef restartTexture;
 	// Header
 	gl::TextureRef headerTexture;
-	std::vector<ci::PolyLine2f> lines;
+	std::vector<ci::Rectf> rectangles;
 };
 using BoardHandlerRef = std::shared_ptr<BoardHandler>;
