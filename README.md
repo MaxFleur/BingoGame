@@ -12,6 +12,7 @@ Since I'm relatively unexperienced with programming, the code seen in this proje
 # References
 
 [1] https://libcinder.org/
+
 [2] https://libcinder.org/docs/guides/git/index.html
 
 The texture for the board was obtained via:
