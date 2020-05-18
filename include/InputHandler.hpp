@@ -10,42 +10,18 @@
 #include "BlackLineSearch.hpp"
 #include "BoardHandler.hpp"
 #include "SoundHandler.hpp"
+#include "Randomizer.hpp"
 
-// InputHandler class, start a new game and handle a mouse clicks
+// InputHandler class, handles mouse clicks on the field
 class InputHandler {
 public:
 	InputHandler() {};
 	~InputHandler() {};
 
-	// Start a new game
-	void startNewGame() {
-		restart = false;
-		// First, randomize the field entrys
-		r->randomize();
-		// Then clear stored text and textlengths in case of another game instance
-		bH->tLs.clear();
-		// Setup and generate new board
-		bH->setupBoard();
-		bH->createBoard(r->getEntrys());
-		// Reset bools in case of another game instance
-		bLS->resetIsBlack();
-	}
-
-	// Handle mouse clicks
-	void handle(ci::app::MouseEvent event) {
-		// If the restart is true, reset and start a new game
-		if (restart == true) {
-			startNewGame();
-			bH->drawWin = false;
-			return;
-		}
-		// Game restart button
-		else if (event.getX() > 375 && event.getX() < 525 && event.getY() > 925 && event.getY() < 965) {
-			startNewGame();
-			return;
-		}
+	// Handle the mouse clicks on the main field
+	bool handleMouseInput(ci::app::MouseEvent event, BLSRef bLS, BoardHandlerRef bH, SoundHandlerRef sH) {
 		// In any other case modify the box colors
-		else if (event.isLeft()) {
+		if (event.isLeft()) {
 			float x = event.getX();
 			float y = event.getY();
 			// If inside the main game field
@@ -94,21 +70,21 @@ public:
 			if (bLS->searchForBlackLine()) {
 				bH->drawWin = true;
 				sH->playSound();
-				restart = true;
+				return true;
 			}
 		}
+		return false;
 	}
 
-	BoardHandlerRef getBoardHandler() { return bH; }
-	SoundHandlerRef getSoundHandler() { return sH; }
+	// Determine if the mouse click was on the restart button
+	bool isClickRestart(ci::app::MouseEvent event) {
+		if (event.getX() > 375 && event.getX() < 525 && event.getY() > 925 && event.getY() < 965) {
+			return true;
+		}
+		else return false;
+	}
 
 private:
-	RandomizerRef r = std::make_shared<Randomizer>();
-	BoardHandlerRef bH = std::make_shared<BoardHandler>();
-	BLSRef bLS = std::make_shared<BlackLineSearch>();
-	SoundHandlerRef sH = std::make_shared<SoundHandler>();
-	// Restart bool
-	bool restart = false;
 	// Sets bools of isBlack
 	bool checked = false;
 	// Colors of textBoxes and their background

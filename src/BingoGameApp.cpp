@@ -4,12 +4,11 @@
 // Code provided by MaxFleur
 // https://github.com/MaxFleur
 
-
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 
-#include "InputHandler.hpp"
+#include "GameHandler.hpp"
 
 using namespace ci;
 using namespace ci::app;
@@ -22,23 +21,22 @@ public:
 	void draw() override;
 
 	void mouseUp(MouseEvent event) override;
-	// Input handler, this will manage the entire board, field entrys and sound
-	InputHandlerRef iH;
+	// Game handler to manage the entire board, field entrys and sound
+	GameHandlerRef gH;
 
 	// Texture for the ground and the square meshes
 	gl::TextureRef mTexture;
-	bool restart;	
 };
 
 void BingoGameApp::setup()
 {
 	// Load Board image 
 	auto img = loadImage(loadAsset("BoardGround.jpg"));
-	// Generate input handler
-	iH = std::make_shared<InputHandler>();
+	// Generate game handler
+	gH = std::make_shared<GameHandler>();
 	// Start a new game and determine the file path of the winning sound
-	iH->startNewGame();
-	iH->getSoundHandler()->handleSoundFilePath();
+	gH->startNewGame();
+	gH->setSoundFilePath();
 
 	// Create a texture out of the boardground and set the windows to the actual board size
 	mTexture = gl::Texture2d::create(img);
@@ -47,7 +45,7 @@ void BingoGameApp::setup()
 
 // Let the InteractionHandler do the handling stuff
 void BingoGameApp::mouseUp(MouseEvent event) {
-	iH->handle(event);
+	gH->handle(event);
 }
 
 void BingoGameApp::draw()
@@ -55,7 +53,7 @@ void BingoGameApp::draw()
 	// Draw texture of the board and the square meshes
 	gl::clear();
 	gl::draw(mTexture);
-	iH->getBoardHandler()->draw();
+	gH->draw();
 }
 
 // Set the window so it is not resizable

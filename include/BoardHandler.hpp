@@ -4,10 +4,8 @@
 // Code provided by MaxFleur
 // https://github.com/MaxFleur
 
-
 #pragma once
 #include "cinder/gl/gl.h"
-#include "cinder/audio/audio.h"
 
 using namespace ci;
 
