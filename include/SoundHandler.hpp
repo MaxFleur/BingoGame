@@ -24,9 +24,8 @@ public:
 		// Make a string out of it
 		std::wstring w_buffer(buffer);
 		std::string exePath(w_buffer.begin(), w_buffer.end());
-		// Remove the exe name 
-		const std::string substractStr("BingoGame.exe");
-		exePath = exePath.substr(0, exePath.size() - substractStr.size());
+		// Remove the "BingoGame.exe" with length of 13 out of the filename
+		exePath = exePath.substr(0, exePath.size() - 13);
 		// Append the directory of the sound file
 		exePath.append("assets\\winningSound.wav");
 		m_exePath = exePath;
