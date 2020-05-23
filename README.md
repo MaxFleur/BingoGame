@@ -18,9 +18,9 @@ The BingoGame works under Windows and Linux. Instructions for both systems follo
 
 1. Clone and setup LibCinder for Linux. It is strongly recommended to do this via git. Further setup instructions for Cinder and Linux can be found under [3].
 2. After setting up LibCinder, clone the BingoGame repository into the Cinder folder.
-3. The BingoGame should now be in the directory ../Cinder/BingoGame. 
-a) Go to /proj/cmake.
-b) In your terminal, type mkdir build && cd build.
+3. The BingoGame should now be in the directory ../Cinder/BingoGame.\
+a) Go to /proj/cmake.\
+b) In your terminal, type mkdir build && cd build.\
 c) Now type cmake .. and then make. The project now should be created.
 
 # References
